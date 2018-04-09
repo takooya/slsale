@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.GenericXmlContextLoader;
+import redis.clients.jedis.Jedis;
 
 import javax.transaction.Transactional;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext-mybatis.xml"} , loader = GenericXmlContextLoader.class)
+@Slf4j
 public class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
@@ -30,11 +32,17 @@ public class UserMapperTest {
         user.setLoginCode("admin");
         user.setPassword("123456");
         User target = userMapper.getLoginUser(user);
-        System.out.println("UserMapperTest.testGetLoginUser:getLoginUser:"+target);
+        log.info("UserMapperTest.testGetLoginUser:getLoginUser:{}",target);
     }
 
     @Test
     public void testAddUser() throws Exception {
     }
-
+    @Test
+    public void testRedis(){
+        Jedis jedis=new Jedis("172.20.10.3", 6379);
+        jedis.set("name","lucy");
+        String name = jedis.get("name");
+        log.info(name);
+    }
 }

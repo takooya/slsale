@@ -13,7 +13,7 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
      <!-- 以 annotation的方式，装配controller-->
      <mvc:annotation-driven/>
-    <!-- spring扫描包下所有类，让标注spring注解的类生效 -->
+    <!-- spring扫描包下所有类，让标注springMVC注解的类生效 -->
     <context:component-scan base-package="org.slsale"/>
      <!-- 视图的对应 -->
      <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" >

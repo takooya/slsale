@@ -10,7 +10,6 @@ import javax.persistence.Entity;
  * @Date:created in 21:19 2018/4/8
  */
 @Data
-@Entity
 public class User {
     private String loginCode;
     private String password;

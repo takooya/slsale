@@ -1,6 +1,7 @@
 package org.slsale.service.user;
 
 import junit.framework.TestCase;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slsale.pojo.user.User;
@@ -16,6 +17,7 @@ import org.springframework.test.context.support.GenericXmlContextLoader;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext-mybatis.xml"} , loader = GenericXmlContextLoader.class)
+@Slf4j
 public class UserServiceImplTest {
     @Autowired
     private UserService userService;
@@ -25,10 +27,9 @@ public class UserServiceImplTest {
         user.setLoginCode("admin");
         user.setPassword("123456");
         User target = userService.getLoginUser(user);
-        System.out.println("UserMapperTest.testGetLoginUser:getLoginUser:"+target);
+        log.info("UserMapperTest.testGetLoginUser:getLoginUser:{}",target);
     }
 
     public void testAddUser() throws Exception {
     }
-
 }
