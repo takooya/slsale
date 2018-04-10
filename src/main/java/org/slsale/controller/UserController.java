@@ -21,14 +21,13 @@ import java.util.Date;
  * @Date:created in 20:57 2018/4/10
  */
 @Controller
-@RequestMapping(value = "/user")
 @Slf4j
 public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/modify.html", method = RequestMethod.POST)
+    @RequestMapping(value = "/backend/modify.html", method = RequestMethod.POST)
     @ResponseBody
     public Object modify(HttpSession session, @RequestParam String info) {
         if(null==info||"".equals(info)){
