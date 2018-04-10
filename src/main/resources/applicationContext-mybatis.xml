@@ -80,7 +80,24 @@ SQLException,如设为0则无限期等待。单位毫秒。Default: 0 -->
     </bean>
 
     <!-- redis配置 -->
-
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="5"/>
+        <!--老版本的maxActive,-1为不限制-->
+        <property name="maxTotal" value="90"/>
+        <!--老版本的maxWait,超出时间抛出异常-->
+        <property name="maxWaitMillis" value="1000"/>
+        <!--获得的jedis实例是否校验其可用性,true为校验,此时获得的jedis实例均为可用-->
+        <property name="testOnBorrow" value="true"/>
+        <!--<property name="testOnReturn" value="${redis.pool.testOnReturn}" />-->
+    </bean>
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+        <constructor-arg ref="jedisPoolConfig"/>
+        <constructor-arg value="172.20.10.3" type="java.lang.String"/>
+        <constructor-arg value="6379" type="int"/>
+    </bean>
+    <bean id="redisAPI" class="org.slsale.common.RedisAPI">
+        <property name="jedisPool" ref="jedisPool"/>
+    </bean>
 </beans>
       
       

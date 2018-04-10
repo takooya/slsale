@@ -1,10 +1,11 @@
-package org.slsale.dao.user;
+package org.slsale.dao;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slsale.pojo.user.User;
+import org.slsale.common.RedisAPI;
+import org.slsale.dao.UserMapper;
+import org.slsale.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,7 +26,8 @@ import java.util.logging.Logger;
 public class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
-
+    @Autowired
+    private RedisAPI redis;
     @Test
     public void testGetLoginUser() throws Exception {
         User user=new User();
@@ -40,9 +42,8 @@ public class UserMapperTest {
     }
     @Test
     public void testRedis(){
-        Jedis jedis=new Jedis("172.20.10.3", 6379);
-        jedis.set("name","lucy");
-        String name = jedis.get("name");
+        redis.set("name","lucy");
+        String name = redis.get("name");
         log.info(name);
     }
 }
