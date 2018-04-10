@@ -140,44 +140,6 @@ public class LoginController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/modify.html", method = RequestMethod.POST)
-    @ResponseBody
-    public Object modify(HttpSession session, @RequestParam String info) {
-        if(null==info||"".equals(info)){
-            return "nodata";
-        }
-        JSONObject jsonObject = JSONObject.parseObject(info);
-        String oldPassword = (String) jsonObject.get("old");
-        String newPassword = (String) jsonObject.get("new");
-        String confirm = (String) jsonObject.get("confirm");
-        if (!newPassword.equals(confirm)) {
-            return "failed";
-        }
-        try {
-            Object targetObject = session.getAttribute(Constants.SESSION_USER);
-            User targetUser = null;
-            if (targetObject == null) {
-                return "nologincode";
-            } else if (!(targetObject instanceof User)) {
-                return "failed";
-            } else {
-                targetUser = (User) targetObject;
-            }
-            targetUser.setPassword(oldPassword);
-            User confirmUser = userService.getLoginUser(targetUser);
-            if (null == confirmUser) {
-                return "pwderror";
-            }
-            confirmUser.setPassword(newPassword);
-            userService.modifyUser(confirmUser);
-            session.setAttribute(Constants.SESSION_USER, confirmUser);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "failed";
-        }
-        return "success";
-    }
-
     @RequestMapping(value = "/logout.html", method = RequestMethod.GET)
     public String logout(HttpSession session) {
         session.removeAttribute(Constants.SESSION_USER);

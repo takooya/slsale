@@ -24,7 +24,7 @@ $("#modifySavePassword").click(function () {
         $("#modifypwdtip").html("");
         $.ajax({
             type:'POST',
-            url:'/modify.html',
+            url:'/user/modify.html',
             data:{info:JSON.stringify({"old":oldPassword,"new":newPassword,"confirm":confirmPassword})},
             datatype:'json',
             timeout:1000,
