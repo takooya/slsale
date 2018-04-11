@@ -46,9 +46,23 @@
     <link href='/statics/css/opa-icons.css' rel='stylesheet'>
     <link href='/statics/css/uploadify.css' rel='stylesheet'>
 
+    <!-- 第二次引入,自定义css文件-->
+    <!-- start引入开始 -->
+    <link href='/statics/localcss/userlist.css' rel='stylesheet'>
+    <link href='/statics/localcss/rolelist.css' rel='stylesheet'>
+    <link href='/statics/localcss/authoritymanage.css' rel='stylesheet'>
+    <link href='/statics/localcss/dicmanage.css' rel='stylesheet'>
+    <link href='/statics/localcss/affiche.css' rel='stylesheet'>
+    <link href='/statics/localcss/information.css' rel='stylesheet'>
+    <link href='/statics/localcss/addgoodspack.css' rel='stylesheet'>
+    <link href='/statics/localcss/mymessage.css' rel='stylesheet'>
+    <link href='/statics/localcss/messagelist.css' rel='stylesheet'>
+    <!-- end引入结束 -->
+
+
     <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     <!-- The fav icon -->
@@ -141,8 +155,8 @@
         <noscript>
             <div class="alert alert-block span10">
                 <h4 class="alert-heading">Warning!</h4>
-                <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a>
-                    enabled to use this site.</p>
+                <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript"
+                target="_blank">JavaScript</a>enabled to use this site.</p>
             </div>
         </noscript>
 
