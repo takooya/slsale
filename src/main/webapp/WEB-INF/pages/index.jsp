@@ -57,13 +57,8 @@
 
 <body>
 
-<a href="login.html">login</a><br>
-<a href="register.html">register</a><br>
-<a href="exit.html">exit system</a>
-
 <div class="container-fluid">
     <div class="row-fluid">
-
         <div class="row-fluid">
             <div class="span12 center login-header">
                 <h2>SL会员商城</h2>

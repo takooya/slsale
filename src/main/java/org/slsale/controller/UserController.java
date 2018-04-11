@@ -3,17 +3,21 @@ package org.slsale.controller;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.slsale.common.Constants;
+import org.slsale.pojo.Menu;
 import org.slsale.pojo.User;
 import org.slsale.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @Author takooya
@@ -67,4 +71,15 @@ public class UserController extends BaseController {
     }
 
 
+    @RequestMapping(value = "/backend/userlist.html")
+    public ModelAndView userlist(Model model,HttpSession session) {
+        Map<String, Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
+        if(model==null){
+            return new ModelAndView("redirect:/");
+        }else{
+            //获取roleList
+            model.addAllAttributes(baseModel);
+            return new ModelAndView("backend/userlist");
+        }
+    }
 }
