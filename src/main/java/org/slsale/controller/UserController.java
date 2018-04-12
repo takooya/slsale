@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sun.tools.javac.util.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.slsale.common.Constants;
+import org.slsale.common.RedisAPI;
 import org.slsale.common.SQLTools;
 import org.slsale.pojo.Menu;
 import org.slsale.pojo.Role;
@@ -38,6 +39,8 @@ public class UserController extends BaseController {
     private UserService userService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private RedisAPI redis;
 
     @RequestMapping(value = "/backend/modify.html", method = RequestMethod.POST)
     @ResponseBody
@@ -93,7 +96,21 @@ public class UserController extends BaseController {
             //获取roleList
             List<Role> roleList=null;
             try {
-                roleList=roleService.getRoleList();
+                if(!redis.exicts("roleList")){
+                    roleList=roleService.getRoleList();
+                    redis.set("roleList",JSONObject.toJSONString(roleList));
+                    log.error("List<Role>的roleList转换为JSON格式:{}",redis.get("roleList"));
+                }else {
+                    try {
+                        roleList = (List<Role>)JSONObject.parse(redis.get("roleList"));
+                        log.error("JSON格式的roleList转换为List<Role>:{}",roleList);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        log.error("roleList转换异常:{}",e.getMessage());
+                        roleList=roleService.getRoleList();
+                        redis.set("roleList",JSONObject.toJSONString(roleList));
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
