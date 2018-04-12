@@ -9,6 +9,9 @@ import lombok.Data;
  */
 @Data
 public class Base {
-
     private Integer id;
+    /**  分页起始行 */
+    private Integer startNum;
+    /**  页容量 */
+    private Integer pageSize;
 }

@@ -89,7 +89,7 @@ public class UserController extends BaseController {
                                  @RequestParam(value = "s_referCode", required = false) String s_referCode,
                                  @RequestParam(value = "s_rodeId", required = false) Integer s_rodeId,
                                  @RequestParam(value = "s_isStart", required = false) Integer s_isStart,
-                                 @RequestParam(value = "currentpage", required = false) Integer currentpage) {
+                                 @RequestParam(value = "currentpage",required = false) Integer currentpage) {
         Map<String, Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
         log.error("前台传来了数据如下:\ns_loginCode={}\ns_referCode={}\ns_rodeId={}\ns_isStart={}", s_loginCode, s_referCode, s_rodeId, s_isStart);
         if (model == null) {
@@ -151,19 +151,40 @@ public class UserController extends BaseController {
             if (page.getTotalCount() > 0) {
                 if (currentpage != null) {
                     page.setPage(currentpage);
+                }else {
+                    page.setPage(1);
                 }
                 if (page.getPage() <= 0) {
                     page.setPage(1);
                 }
-                if(page.getPage() > page.getPageCount()){
+                if (page.getPage() > page.getPageCount()) {
                     page.setPage(page.getPageCount());
                 }
             } else {
                 page.setItems(null);
             }
-
+            //mysql--分页查询limit?(起始下标:(当前页-1)*页容量),?(页容量)
+            user.setStartNum((page.getPage() - 1) * page.getPageSize());
+            user.setPageSize(page.getPageSize());
+            List<User> userList = null;
+            try {
+                userList = userService.getUserList(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+                userList = null;
+                if (page == null) {
+                    page = new PageSupport();
+                    page.setItems(null);
+                }
+            }
+            page.setItems(userList);
             model.addAllAttributes(baseModel);
-            model.addAttribute(roleList);
+            model.addAttribute("roleList",roleList);
+            model.addAttribute("page",page);
+            model.addAttribute("s_loginCode",s_loginCode);
+            model.addAttribute("s_referCode",s_referCode);
+            model.addAttribute("s_isStart",s_isStart);
+            model.addAttribute("s_rodeId",s_rodeId);
             return new ModelAndView("backend/userlist");
         }
     }

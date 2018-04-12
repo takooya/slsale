@@ -6,6 +6,8 @@ import org.slsale.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Author takooya
  * @Description
@@ -38,5 +40,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int count(User user) throws Exception {
         return userMapper.count(user);
+    }
+
+    @Override
+    public List<User> getUserList(User user)throws Exception {
+        return userMapper.getUserList(user);
     }
 }

@@ -3,6 +3,8 @@ package org.slsale.dao;
 import org.slsale.pojo.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @Author takooya
  * @Description
@@ -20,4 +22,6 @@ public interface UserMapper {
     int addUser(User user)throws Exception;
     /**  获得相应条件的用户数 */
     int count(User user)throws Exception;
+    /**  获取用户列表 */
+    List<User> getUserList(User user)throws Exception;
 }

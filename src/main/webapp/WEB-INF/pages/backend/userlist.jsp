@@ -49,43 +49,53 @@
             <table class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
-                    <th>用户名</th>
+                    <th>用户账号</th>
                     <th>角色</th>
                     <th>会员类型</th>
-                    <th>推荐人</th>
+                    <th>推荐人账号</th>
                     <th>启用状态(启用/禁用)</th>
                     <th>注册时间</th>
                     <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
-
-                <tr>
-                    <td class="center">David R</td>
-                    <td class="center">2012/01/01</td>
-                    <td class="center">Member</td>
-                    <td class="center">2012/01/01</td>
-                    <td class="center">Member</td>
-                    <td class="center">
-                        <span class="label label-important">管理员</span>
-                        <span class="label label-success">会员</span>
-                        <span class="label">其他</span>
-                    </td>
-                    <td class="center">
-                        <a class="btn btn-success" href="#">
-                            <i class="icon-zoom-in icon-white"></i>
-                            查看
-                        </a>
-                        <a class="btn btn-info" href="#">
-                            <i class="icon-edit icon-white"></i>
-                            修改
-                        </a>
-                        <a class="btn btn-danger" href="#">
-                            <i class="icon-trash icon-white"></i>
-                            删除
-                        </a>
-                    </td>
-                </tr>
+                <c:if test="${page.items!=null}">
+                    <c:forEach items="${page.items}" var="user">
+                        <tr>
+                            <td class="center">${user.loginCode}</td>
+                            <td class="center">
+                                <span class="label
+                                    <c:if test="${user.roleId==1}">label-important</c:if>
+                                    <c:if test="${user.roleId==2}">label-success</c:if>
+                                ">${user.roleName}</span>
+                            </td>
+                            <td class="center">${user.userTypeName}</td>
+                            <td class="center">${user.referCode}</td>
+                            <td class="center">
+                                <input type="checkbox"
+                                       <c:if test="${user.isStart==1}">checked="checked"</c:if> id="inlineCheckbox1"
+                                       disabled="disabled">
+                            </td>
+                            <td class="center">
+                                <fmt:formatDate value="${user.createTime}" pattern="yyyy年MM月dd日"/>
+                            </td>
+                            <td class="center">
+                                <a class="btn btn-success" href="#">
+                                    <i class="icon-zoom-in icon-white"></i>
+                                    查看
+                                </a>
+                                <a class="btn btn-info" href="#">
+                                    <i class="icon-edit icon-white"></i>
+                                    修改
+                                </a>
+                                <a class="btn btn-danger" href="#">
+                                    <i class="icon-trash icon-white"></i>
+                                    删除
+                                </a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
                 </tbody>
             </table>
             <div class="pagination pagination-centered">
