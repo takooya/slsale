@@ -1,14 +1,9 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="/WEB-INF/pages/common/head.jsp" %>
-
 <div>
     <ul class="breadcrumb">
-        <li>
-            <a href="#">后台管理</a> <span class="divider">/</span>
-        </li>
-        <li>
-            <a href="/backend/userlist.html">用户管理</a>
-        </li>
+        <li><a href="#">后台管理</a> <span class="divider">/</span></li>
+        <li><a href="/backend/userlist.html">用户管理</a></li>
     </ul>
 </div>
 
@@ -20,7 +15,8 @@
                 <span class="icon32 icon-color icon-add adduser"/>
             </div>
         </div>
-        <div class="box-content">
+        <div class="box-content"><%----%>
+            <%--start搜索表单--%>
             <form action="/backend/userlist.html" method="post">
                 <div class="searcharea">
                     账号:
@@ -46,6 +42,8 @@
                     <button class="btn btn-primary"><i class="icon-search icon-white"></i> 查询</button>
                 </div>
             </form>
+            <%--end搜索表单--%>
+            <%--start列表显示菜单--%>
             <table class="table table-striped table-bordered bootstrap-datatable datatable">
                 <thead>
                 <tr>
@@ -77,7 +75,7 @@
                                        disabled="disabled">
                             </td>
                             <td class="center">
-                                <fmt:formatDate value="${user.createTime}" pattern="yyyy年MM月dd日"/>
+                                <fmt:formatDate value="${user.createTime}" pattern="yyyy-MM-dd-"/>
                             </td>
                             <td class="center">
                                 <a class="btn btn-success" href="#">
@@ -98,19 +96,59 @@
                 </c:if>
                 </tbody>
             </table>
+            <%--end列表显示菜单--%>
+            <%--start分页栏--%>
             <div class="pagination pagination-centered">
                 <ul>
-                    <li><a href="#">Prev</a></li>
-                    <li class="active">
-                        <a href="#">1</a>
-                    </li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">Next</a></li>
+                    <c:choose>
+                        <c:when test="${page.page==1}">
+                            <li class="active"><a href="javascript:void();" title="首页">首页</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li><a href="/backend/userlist.html?currentpage=1
+                            &s_loginCode=${s_loginCode}&s_referCode=${s_referCode}
+                            &s_isStart=${s_isStart}&s_roleId=${s_roleId}"
+                                   title="首页">首页</a></li>
+                        </c:otherwise>
+                    </c:choose>
+                    <c:if test="${page.prevPages!=null}">
+                        <c:forEach items="${page.prevPages}" var="num">
+                            <li><a href="/backend/userlist.html?currentpage=${num}
+                            &s_loginCode=${s_loginCode}&s_referCode=${s_referCode}
+                            &s_isStart=${s_isStart}&s_roleId=${s_roleId}"
+                                   title="${num}">${num}</a></li>
+                        </c:forEach>
+                    </c:if>
+                    <li class="active"><a href="javascript:void();" title="${page.page}">${page.page}</a></li>
+                    <c:if test="${page.nextPages!=null}">
+                        <c:forEach items="${page.nextPages}" var="num">
+                            <li><a href="/backend/userlist.html?currentpage=${num}
+                            &s_loginCode=${s_loginCode}&s_referCode=${s_referCode}
+                            &s_isStart=${s_isStart}&s_roleId=${s_roleId}"
+                                   title="${num}">${num}</a></li>
+                        </c:forEach>
+                    </c:if>
+                    <c:if test="${page.pageCount!=null}">
+                        <c:choose>
+                            <c:when test="${page.page==page.pageCount}">
+                                <li class="active"><a href="javascript:void();" title="尾页">尾页</a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <li><a href="/backend/userlist.html?currentpage=${page.pageCount}
+                            &s_loginCode=${s_loginCode}&s_referCode=${s_referCode}
+                            &s_isStart=${s_isStart}&s_roleId=${s_roleId}"
+                                       title="尾页">尾页</a></li>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:if>
+                    <c:if test="${page.pageCount==null}">
+                        <li class="active"><a href="javascript:void();" title="尾页">尾页</a></li>
+                    </c:if>
                 </ul>
             </div>
+            <%--end分页栏--%>
         </div>
+
     </div><!--/span-->
 </div>
 <!--/row-->

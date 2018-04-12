@@ -92,6 +92,8 @@ public class UserController extends BaseController {
                                  @RequestParam(value = "currentpage",required = false) Integer currentpage) {
         Map<String, Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
         log.error("前台传来了数据如下:\ns_loginCode={}\ns_referCode={}\ns_rodeId={}\ns_isStart={}", s_loginCode, s_referCode, s_rodeId, s_isStart);
+        s_loginCode=s_loginCode!=null?s_loginCode.trim():null;
+        s_referCode=s_referCode!=null?s_referCode.trim():null;
         if (model == null) {
             return new ModelAndView("redirect:/");
         } else {
@@ -143,7 +145,9 @@ public class UserController extends BaseController {
             //分页功能
             PageSupport page = new PageSupport();
             try {
+                log.error("分页用户:{}",user);
                 page.setTotalCount(userService.count(user));
+                log.error("分页用户count数据:{}",userService.count(user));
             } catch (Exception e) {
                 e.printStackTrace();
                 page.setTotalCount(0);

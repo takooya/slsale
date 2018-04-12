@@ -20,7 +20,7 @@ public class PageSupport {
     /**
      * 每页显示多少条
      */
-    private Integer pageSize = 10;
+    private Integer pageSize = 2;
     /**
      * 当前页
      */
@@ -28,7 +28,7 @@ public class PageSupport {
     /**
      * 当前页之前页或之后页 显示页数超链接(显示页数偏移量)
      */
-    private Integer number;
+    private Integer number = 3;
     /**
      * 当前页列表
      */
@@ -128,8 +128,7 @@ public class PageSupport {
      */
     public List<Integer> getPrevPages() {
         List<Integer> list = new ArrayList<>();
-        Integer frontStart = 1;
-        frontStart = page > number ? page - number : 1;
+        Integer frontStart = page > number ? page - number : 1;
         for (Integer i = frontStart; i < page; i++) {
             list.add(i);
         }

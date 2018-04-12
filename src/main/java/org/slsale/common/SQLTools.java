@@ -8,11 +8,14 @@ package org.slsale.common;
 public class SQLTools {
     /**  mybatis模糊查询时防止sql注入 (即做一个字符替换) */
     public static String transfer(String keyword){
+        if(keyword==null){
+            return "";
+        }
         if(keyword.contains("%")||keyword.contains("_")){
             keyword=keyword.replaceAll("\\\\","\\\\\\\\")
                     .replaceAll("\\%","\\\\%")
                     .replaceAll("\\_","\\\\_");
         }
-        return keyword;
+        return keyword.trim();
     }
 }

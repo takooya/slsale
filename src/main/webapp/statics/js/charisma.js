@@ -1,7 +1,4 @@
 $(document).ready(function () {
-
-
-
     /**  start添加menuList开始,从jsp获得名为tt的menuList对象 */
     var result = '';
     var json = eval('(' + tt + ')');
@@ -35,10 +32,10 @@ $(document).ready(function () {
                     pic = "icon-picture";
                     break;
             }
-            result=result+'<li><a class="ajax-link" href="'+json[i].subMenu[j].funcUrl+'"><i class="'+pic+'"></i>\n' +
-                '<span class="hidden-tablet">'+json[i].subMenu[j].functionName+'</span></a></li>';
+            result = result + '<li><a class="ajax-link" href="' + json[i].subMenu[j].funcUrl + '"><i class="' + pic + '"></i>\n' +
+                '<span class="hidden-tablet">' + json[i].subMenu[j].functionName + '</span></a></li>';
         }
-        result =result+'</ul></li>';
+        result = result + '</ul></li>';
     }
     $("#menus").append(result);
     /**  end添加menuList结束 */
