@@ -56,4 +56,16 @@
             #{loginCode}, #{password}, #{password2}, #{userName}
         )
     </insert>
+    <select id="count" resultType="int" parameterType="user">
+        SELECT count(1) FROM au_user
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="loginCode!=null">and loginCode like CONCAT('%',#{loginCode},'%')</if>
+            <if test="userName!=null">and userName like CONCAT('%',#{userName},'%')</if>
+            <if test="referCode!=null">and referCode like CONCAT('%',#{referCode},'%')</if>
+            <if test="roleId!=null">and roleId = #{roleId}</if>
+            <if test="isStart!=null">and isStart = #{isStart}</if>
+            <if test="referId!=null">and referId = #{referId}</if>
+            <if test="userType!=null">and userType = #{userType}</if>
+        </trim>
+    </select>
 </mapper>

@@ -14,7 +14,10 @@ public interface UserMapper {
     User getLoginUser(User user)throws Exception;
     /**  判断用户是否存在 */
     int loginCodeIsExist(User user)throws Exception;
+    /**  修改用户数据 */
     int modifyUser(User user)throws Exception;
     /**  注册 */
     int addUser(User user)throws Exception;
+    /**  获得相应条件的用户数 */
+    int count(User user)throws Exception;
 }

@@ -34,4 +34,9 @@ public class UserServiceImpl implements UserService {
     public int addUser(User user) throws Exception {
         return userMapper.addUser(user);
     }
+
+    @Override
+    public int count(User user) throws Exception {
+        return userMapper.count(user);
+    }
 }

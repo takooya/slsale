@@ -16,4 +16,6 @@ public interface UserService {
     int modifyUser(User user)throws Exception;
     /**  注册 */
     int addUser(User user)throws Exception;
+    /**  获得相应条件的用户数 */
+    int count(User user)throws Exception;
 }
