@@ -6,14 +6,7 @@ function checkEmail(str){
 		return false;
 }
 
-$('.adduser').click(function(e){
-	$("#add_formtip").html('');
-	e.preventDefault();
-	$('#addUserDiv').modal('show');
-	$("#uniform-a_fileInputID span:first").html('无文件');
-	$("#uniform-a_fileInputBank span:first").html('无文件');
 
-});
 
 $('.viewusercancel').click(function(e){
 	$("#v_idPic").html('');
@@ -614,3 +607,18 @@ function TajaxFileUpload(flag,t1,t2,t3,t4)
 	}
 }
 
+$(".adduser").click(function(e){
+	$("#add_formtip").html('');
+	e.preventDefault();
+	$("#addUserDiv").modal('show');
+	$("#uniform-a_fileInputID span:first").html('无文件');
+	$("#uniform-a_fileInputBank span:first").html('无文件');
+});
+/*
+$("#adduser").click(function(e){
+    $("#add_formtip").html('');
+    e.preventDefault();
+    $("#addUserDiv").modal("show");
+    $("#uniform-a_fileInputID span:first").html('无文件');
+    $("#uniform-a_fileInputBank span:first").html('无文件');
+});*/

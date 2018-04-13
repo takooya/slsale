@@ -7,9 +7,11 @@ import org.slsale.common.Constants;
 import org.slsale.common.PageSupport;
 import org.slsale.common.RedisAPI;
 import org.slsale.common.SQLTools;
+import org.slsale.pojo.DataDictionary;
 import org.slsale.pojo.Menu;
 import org.slsale.pojo.Role;
 import org.slsale.pojo.User;
+import org.slsale.service.DataDictionaryService;
 import org.slsale.service.RoleService;
 import org.slsale.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,8 @@ public class UserController extends BaseController {
     private RoleService roleService;
     @Autowired
     private RedisAPI redis;
+    @Autowired
+    private DataDictionaryService dataDictionaryService;
 
     @RequestMapping(value = "/backend/modify.html", method = RequestMethod.POST)
     @ResponseBody
@@ -89,11 +93,11 @@ public class UserController extends BaseController {
                                  @RequestParam(value = "s_referCode", required = false) String s_referCode,
                                  @RequestParam(value = "s_rodeId", required = false) Integer s_rodeId,
                                  @RequestParam(value = "s_isStart", required = false) Integer s_isStart,
-                                 @RequestParam(value = "currentpage",required = false) Integer currentpage) {
+                                 @RequestParam(value = "currentpage", required = false) Integer currentpage) {
         Map<String, Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
         log.error("前台传来了数据如下:\ns_loginCode={}\ns_referCode={}\ns_rodeId={}\ns_isStart={}", s_loginCode, s_referCode, s_rodeId, s_isStart);
-        s_loginCode=s_loginCode!=null?s_loginCode.trim():null;
-        s_referCode=s_referCode!=null?s_referCode.trim():null;
+        s_loginCode = s_loginCode != null ? s_loginCode.trim() : null;
+        s_referCode = s_referCode != null ? s_referCode.trim() : null;
         if (model == null) {
             return new ModelAndView("redirect:/");
         } else {
@@ -103,20 +107,44 @@ public class UserController extends BaseController {
                 if (!redis.exicts("roleList")) {
                     roleList = roleService.getRoleList();
                     redis.set("roleList", JSONObject.toJSONString(roleList));
-                    log.error("List<Role>的roleList转换为JSON格式:{}", redis.get("roleList"));
                 } else {
                     try {
-                        roleList = (List<Role>) JSONObject.parse(redis.get("roleList"));
-                        log.error("JSON格式的roleList转换为List<Role>:{}", roleList);
+                        roleList = JSONObject.parseArray(redis.get("roleList"), Role.class);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        log.error("roleList转换异常:{}", e.getMessage());
                         roleList = roleService.getRoleList();
                         redis.set("roleList", JSONObject.toJSONString(roleList));
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            //获取cardTypeList(在DataDictionary表中)
+            List<DataDictionary> cardTypeList = null;
+
+            if (!redis.exicts("cardTypeList")) {
+                DataDictionary dataDictionary = new DataDictionary();
+                dataDictionary.setTypeCode("CARD_TYPE");
+                try {
+                    cardTypeList = dataDictionaryService.getDataDictionaries(dataDictionary);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                redis.set("cardTypeList", JSONObject.toJSONString(cardTypeList));
+            } else {
+                try {
+                    cardTypeList = JSONObject.parseArray(redis.get("cardTypeList"), DataDictionary.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    DataDictionary dataDictionary = new DataDictionary();
+                    dataDictionary.setTypeCode("CARD_TYPE");
+                    try {
+                        cardTypeList = dataDictionaryService.getDataDictionaries(dataDictionary);
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    redis.set("cardTypeList", JSONObject.toJSONString(cardTypeList));
+                }
             }
             //查询用户功能
             User user = new User();
@@ -145,9 +173,9 @@ public class UserController extends BaseController {
             //分页功能
             PageSupport page = new PageSupport();
             try {
-                log.error("分页用户:{}",user);
+                log.error("分页用户:{}", user);
                 page.setTotalCount(userService.count(user));
-                log.error("分页用户count数据:{}",userService.count(user));
+                log.error("分页用户count数据:{}", userService.count(user));
             } catch (Exception e) {
                 e.printStackTrace();
                 page.setTotalCount(0);
@@ -155,7 +183,7 @@ public class UserController extends BaseController {
             if (page.getTotalCount() > 0) {
                 if (currentpage != null) {
                     page.setPage(currentpage);
-                }else {
+                } else {
                     page.setPage(1);
                 }
                 if (page.getPage() <= 0) {
@@ -164,8 +192,10 @@ public class UserController extends BaseController {
                 if (page.getPage() > page.getPageCount()) {
                     page.setPage(page.getPageCount());
                 }
+
             } else {
                 page.setItems(null);
+                page.setPage(1);
             }
             //mysql--分页查询limit?(起始下标:(当前页-1)*页容量),?(页容量)
             user.setStartNum((page.getPage() - 1) * page.getPageSize());
@@ -183,12 +213,14 @@ public class UserController extends BaseController {
             }
             page.setItems(userList);
             model.addAllAttributes(baseModel);
-            model.addAttribute("roleList",roleList);
-            model.addAttribute("page",page);
-            model.addAttribute("s_loginCode",s_loginCode);
-            model.addAttribute("s_referCode",s_referCode);
-            model.addAttribute("s_isStart",s_isStart);
-            model.addAttribute("s_rodeId",s_rodeId);
+            model.addAttribute("roleList", roleList);
+            model.addAttribute("cardTypeList",cardTypeList);
+            model.addAttribute("page", page);
+            model.addAttribute("s_loginCode", s_loginCode);
+            model.addAttribute("s_referCode", s_referCode);
+            model.addAttribute("s_isStart", s_isStart);
+            log.error("s_rodeId:{}", s_rodeId);
+            model.addAttribute("s_rodeId", s_rodeId);
             return new ModelAndView("backend/userlist");
         }
     }

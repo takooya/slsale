@@ -2,9 +2,6 @@ $("#modifySavePassword").click(function () {
     oldPassword = $.trim($("#oldPassword").val());
     newPassword = $.trim($("#newPassword").val());
     confirmPassword = $.trim($("#confirmPassword").val());
-    $("#oldPassword").val('');
-    $("#newPassword").val('');
-    $("#confirmPassword").val('');
     if (oldPassword == "" || oldPassword == null) {
         $("#modifypwdtip").css("color", "red");
         $("#modifypwdtip").html("对不起,原密码不能为空");

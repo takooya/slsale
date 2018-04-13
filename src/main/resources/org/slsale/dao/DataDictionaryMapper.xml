@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.slsale.dao.DataDictionaryMapper">
+    <select id="getDataDictionaries" resultType="dataDictionary" parameterType="dataDictionary">
+        SELECT * FROM data_dictionary
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="id!=null">and id =#{id}</if>
+            <if test="typeCode!=null">and typeCode =#{typeCode}</if>
+            <if test="typeName!=null">and typeName like CONCAT('%',#{typeName},'%')</if>
+            <if test="valueId!=null">and valueId = #{valueId}</if>
+            <if test="valueName!=null">and valueName like CONCAT('%',#{valueName},'%')</if>
+        </trim>
+        order by id asc
+    </select>
+</mapper>

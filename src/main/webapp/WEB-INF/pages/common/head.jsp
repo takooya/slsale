@@ -100,7 +100,7 @@
             </div>
             <!-- theme selector ends -->
 
-            <%--start模式窗口--%>
+            <%--start修改密码的模式窗口--%>
             <div class="modal hide fade" id="myModal">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">×</button>
@@ -137,7 +137,7 @@
                     <a href="#" id="modifySavePassword" class="btn btn-primary">修改</a>
                 </div>
             </div>
-            <%--end模式窗口--%>
+            <%--end修改密码的模式窗口--%>
         </div>
     </div>
 </div>

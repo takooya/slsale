@@ -40,7 +40,15 @@ $(document).ready(function () {
     $("#menus").append(result);
     /**  end添加menuList结束 */
 
-
+    /*修改密码的模式窗口*/
+    $('.modifypwd').click(function(e){
+        $('#oldPassword').val('');
+        $('#newPassword').val('');
+        $('#confirmPassword').val('');
+        $('#modifypwdtip').html('');
+        e.preventDefault();
+        $('#myModal').modal('show');
+    });
 
 
         //themes, change CSS with JS
@@ -301,14 +309,14 @@ function docReady() {
         tour.restart();
     }
 
-    //datatable
-    $('.datatable').dataTable({
+    //datatable 分页代码块
+/*    $('.datatable').dataTable({
         "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
         "sPaginationType": "bootstrap",
         "oLanguage": {
             "sLengthMenu": "_MENU_ records per page"
         }
-    });
+    });*/
     $('.btn-close').click(function (e) {
         e.preventDefault();
         $(this).parent().parent().parent().fadeOut();
@@ -655,6 +663,7 @@ $.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
         "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
     };
 }
+
 $.extend($.fn.dataTableExt.oPagination, {
     "bootstrap": {
         "fnInit": function (oSettings, nPaging, fnDraw) {
@@ -665,7 +674,6 @@ $.extend($.fn.dataTableExt.oPagination, {
                     fnDraw(oSettings);
                 }
             };
-
             $(nPaging).addClass('pagination').append(
                 '<ul>' +
                 '<li class="prev disabled"><a href="#">&larr; ' + oLang.sPrevious + '</a></li>' +

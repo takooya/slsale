@@ -140,12 +140,12 @@ public class PageSupport {
      */
     public List<Integer> getNextPages() {
         List<Integer> list = new ArrayList<>();
-        Integer endCount = pageCount != null && number < pageCount && (page + number) < pageCount
+        pageCount = (pageCount == null ? 1 : pageCount);
+        Integer endCount = number < pageCount && (page + number) < pageCount
                 ? page + number : pageCount;
         for (Integer i = page + 1; i <= endCount; i++) {
             list.add(i);
         }
         return list;
     }
-
 }
