@@ -318,6 +318,7 @@ $("#m_uploadbtnBank").click(function () {
     TajaxFileUpload($("#m_id").val(), 'm_fileInputBank', 'm_uploadbtnBank', 'm_bankPic', 'm_fileInputBankPath');
 });
 
+//添加用户时,通过角色选择,异步加载用户类型
 $("#selectrole").change(function () {
     $("#selectusertype").empty();
     $("#selectusertype").append("<option value='' selected='selected'>--请选择--</option>");
@@ -336,10 +337,12 @@ $("#selectrole").change(function () {
         }, 'json');
     }
 });
+//增加用户时,判断是否重名
 $("#a_logincode").blur(function () {
     var alc = $("#a_logincode").val();
     if (alc != "") {
-        $.post("/backend/logincodeisexit.html", {'loginCode': alc, 'id': '-1'}, function (result) {
+        //ajax:post方法形式:jQuery.post(url,data,success(data, textStatus, jqXHR),dataType)
+        $.post("/backend/logincodeisexist.html", {'loginCode': alc, 'id': '-1'}, function (result) {
             if (result == "repeat") {
                 $("#add_formtip").css("color", "red");
                 $("#add_formtip").html("<li>对不起，该用户名已存在。</li>");
@@ -356,7 +359,7 @@ $("#a_logincode").blur(function () {
         }, 'html');
     }
 });
-
+//修改用户时,判断是否重名
 $("#m_logincode").blur(function () {
     var mlc = $("#m_logincode").val();
     if (mlc != "") {

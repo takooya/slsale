@@ -28,6 +28,17 @@ public class UserMapperTest {
     private UserMapper userMapper;
     @Autowired
     private RedisAPI redis;
+
+    @Test
+    public void loginCodeIsExistTest()throws Exception{
+        User user=new User();
+        user.setLoginCode("admin33");
+        user.setId(-1);
+        int i = userMapper.loginCodeIsExist(user);
+        log.error("UserMapperTest.loginCodeIsExistTest:{}",i);
+    }
+
+
     @Test
     public void testGetLoginUser() throws Exception {
         User user=new User();

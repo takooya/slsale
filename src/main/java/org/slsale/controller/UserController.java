@@ -230,17 +230,45 @@ public class UserController extends BaseController {
         String cjson = "";
         if (redis.exicts("USER_TYPE")) {
             cjson = redis.get("USER_TYPE");
-        }else{
+        } else {
             try {
                 DataDictionary data = new DataDictionary();
                 data.setTypeCode("USER_TYPE");
                 List<DataDictionary> userTypes = dataDictionaryService.getDataDictionaries(data);
                 cjson = JSONObject.toJSONString(userTypes);
-                redis.set("USER_TYPE",cjson);
+                redis.set("USER_TYPE", cjson);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return cjson;
+    }
+
+
+    @RequestMapping(value = "/backend/logincodeisexist.html",
+            produces = "text/html;charset=UTF-8",
+            method = RequestMethod.POST)
+    @ResponseBody
+    public String logincodeisexist(
+            @RequestParam(value = "loginCode", required = false) String loginCode,
+            @RequestParam(value = "id", required = false) Integer id) {
+        log.error("loginCode:{},id={}", loginCode, id);
+        String result = "failed";
+        User formUser = new User();
+        formUser.setLoginCode(loginCode);
+        if (!id.equals(-1)) {//不等于-1,为修改操作
+            formUser.setId(-1);
+        }
+        try {
+            if (userService.loginCodeIsExist(formUser) == 0) {//用户不存在
+                result = "only";
+            } else {//用户存在(重复)
+                result = "repeat";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+        return result;
     }
 }
