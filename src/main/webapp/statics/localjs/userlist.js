@@ -6,6 +6,7 @@ function checkEmail(str) {
         return false;
 }
 
+
 $('.viewusercancel').click(function (e) {
     $("#v_idPic").html('');
     $("#v_bankPic").html('');
@@ -262,14 +263,12 @@ $('.deluser').click(function (e) {
     }
 });
 
-$("#selectrole").change(function () {
-    $("#selectrolename").val($("#selectrole").find("option:selected").text());
-});
 
+//对 会员类型 的隐藏域中赋值
 $("#selectusertype").change(function () {
     $("#selectusertypename").val($("#selectusertype").find("option:selected").text());
 });
-
+//对 证件类型 的隐藏域中赋值
 $("#selectcardtype").change(function () {
     $("#selectcardtypename").val($("#selectcardtype").find("option:selected").text());
 });
@@ -318,8 +317,10 @@ $("#m_uploadbtnBank").click(function () {
     TajaxFileUpload($("#m_id").val(), 'm_fileInputBank', 'm_uploadbtnBank', 'm_bankPic', 'm_fileInputBankPath');
 });
 
-//添加用户时,通过角色选择,异步加载用户类型
 $("#selectrole").change(function () {
+    //对 角色 的隐藏域中赋值
+    $("#selectrolename").val($("#selectrole").find("option:selected").text());
+//添加用户时,通过角色选择,异步加载用户类型
     $("#selectusertype").empty();
     $("#selectusertype").append("<option value='' selected='selected'>--请选择--</option>");
     var sel_role = $("#selectrole").val();

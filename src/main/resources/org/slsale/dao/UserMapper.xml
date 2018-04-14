@@ -55,8 +55,16 @@
         WHERE id=#{id}
     </update>
     <insert id="addUser" parameterType="user">
-        INSERT INTO au_user (loginCode, password, password2, userName) VALUES (
-            #{loginCode}, #{password}, #{password2}, #{userName}
+        INSERT INTO au_user (loginCode, password, password2, userName, sex, birthday, cardType, cardTypeName,
+                             idCard, country, mobile, email, userAddress, postCode, createTime,
+                             referId, referCode, roleId, roleName, userType, userTypeName, isStart, lastUpdateTime,
+                             lastLoginTime, bankAccount, bankName, accountHolder, idCardPicPath, bankPicPath)
+        VALUES (
+            #{loginCode}, #{password}, #{password2}, #{userName}, #{sex}, #{birthday}, #{cardType}, #{cardTypeName},
+                          #{idCard}, #{country}, #{mobile}, #{email}, #{userAddress}, #{postCode}, #{createTime},
+                                                            #{referId}, #{referCode}, #{roleId}, #{roleName},
+                                                            #{userType}, #{userTypeName}, #{isStart}, #{lastUpdateTime},
+            #{lastLoginTime}, #{bankAccount}, #{bankName}, #{accountHolder}, #{idCardPicPath}, #{bankPicPath}
         )
     </insert>
     <select id="count" resultType="int" parameterType="user">

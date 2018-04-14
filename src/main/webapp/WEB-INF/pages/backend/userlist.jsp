@@ -23,14 +23,12 @@
                     <input type="text" name="s_loginCode" value="${s_loginCode}">
                     推荐人账号:
                     <input type="text" name="s_referCode" value="${s_referCode}">
-                    角色:
+                    角色:${s_roleId}
                     <select name="s_rodeId" style="width: 100px;">
-                        <option value="" selected="selected">--请选择--</option>
+                        <option value="" selected="selected">--请选择--${s_roleId}</option>
                         <c:forEach items="${roleList}" var="role">
-                            <option value="${role.id}"
-                                    <c:if test="${role.id == s_roleId}">selected="selected"</c:if>>
-                                    ${role.roleName}
-                            </option>
+                            <option <c:if test="${s_roleId == role.id}">selected</c:if>
+                                    value="${role.id}">${role.roleName}</option>
                         </c:forEach>
                     </select>
                     是否启用:
@@ -169,7 +167,7 @@
             <ul class="topul">
                 <li>
                     <label>角色：</label>
-                    <input type="hidden" id="selectrolename" name="rolename" value=""/>
+                    <input type="hidden" id="selectrolename" name="roleName" value=""/>
                     <select id="selectrole" name="roleId" style="width: 100px">
                         <option value="" selected>--请选择--</option>
                         <c:if test="${not empty roleList}">
@@ -180,24 +178,27 @@
                     </select>
                     <span style="color: red;font-weight: bold">*</span>
                 </li>
+                <%--角色--%>
                 <li>
                     <label>会员类型：</label>
                     <input type="hidden" id="selectusertypename" name="userTypeName" value=""/>
                     <select id="selectusertype" name="userType" style="width: 100px">
                         <option value="" selected>--请选择--</option>
-                        <%--TODO--%>
                     </select>
                 </li>
+                <%--会员类型--%>
                 <li>
                     <label>用户名：</label> <%--onkeyup:不能输入中文的正则表达式--%>
                     <input type="text" id="a_logincode" name="loginCode"
                            onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"/>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--用户名--%>
                 <li>
                     <label>姓名：</label><input type="text" id="a_username" name="userName"/>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--姓名--%>
                 <li>
                     <label>性别：</label>
                     <select name="sex" style="width:100px;">
@@ -206,6 +207,7 @@
                         <option value="女">女</option>
                     </select>
                 </li>
+                <%--性别--%>
                 <li>
                     <label>证件类型：</label>
                     <input id="selectcardtypename" type="hidden" name="cardTypeName" value=""/>
@@ -219,57 +221,70 @@
                     </select>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--证件类型--%>
                 <li>
                     <label>证件号码：</label>
                     <input type="text" id="a_idcard" name="idCard" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"/>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--证件号码--%>
                 <li>
                     <label>生日：</label>
-                    <input class="Wdate" id="a_birthday" size="15" name="birthday"
-                           readonly="readonly" type="text" onClick="WdatePicker()"/>
-                    <!--<input type="text" class="input-xlarge datepicker" id="a_birthday" name="birthday" value="" readonly="readonly"/> -->
+                    <%--<input class="Wdate" id="a_birthday" size="15" name="birthday"
+                           readonly="readonly" type="text" onClick="WdatePicker()"/>--%>
+                    <input type="text" class="input-xlarge datepicker" id="a_birthday" name="birthday" value=""
+                           readonly="readonly"/>
                 </li>
+                <%--生日--%>
                 <li>
                     <label>收货国家：</label><input type="text" name="country" value="中国"/>
                 </li>
+                <%--收货国家--%>
                 <li>
                     <label>联系电话：</label><input type="text" id="a_mobile" name="mobile"
                                                onkeyup="this.value=this.value.replace(/\D/g,'')"
                                                onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--联系电话--%>
                 <li>
                     <label>Email：</label>
                     <input type="text" id="a_email" name="email"/>
                 </li>
+                <%--email--%>
                 <li>
                     <label>邮政编码：</label><input type="text" id="a_postCode" name="postCode"
                                                onkeyup="this.value=this.value.replace(/\D/g,'')"
                                                onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
                 </li>
+                <%--邮编--%>
                 <li>
                     <label>开户行：</label><input type="text" id="a_bankname" name="bankName"/>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--开户行--%>
                 <li>
                     <label>开户卡号：</label><input type="text" id="a_bankaccount" name="bankAccount"
                                                onkeyup="this.value=this.value.replace(/\D/g,'')"
                                                onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--开户卡号--%>
                 <li>
                     <label>开户人：</label><input type="text" id="a_accountholder" name="accountHolder"/>
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--开户人--%>
                 <li>
                     <label>推荐人：</label><input type="text" name="referCode" value="${user.loginCode}"
                                               readonly="readonly"/>
                 </li>
+                <%--推荐人--%>
                 <li>
                     <label>注册时间：</label>
                     <input type="text" id="a_cdate" value="" readonly="readonly"/>
                 </li>
+                <%--注册时间--%>
                 <li>
                     <label>是否启用：</label>
                     <select name="isStart" style="width:100px;">
@@ -277,9 +292,11 @@
                         <option value="2">不启用</option>
                     </select> <span style="color:red;font-weight: bold;">*</span>
                 </li>
+                <%--是否启用--%>
                 <li class="lastli">
                     <label>收货地址：</label><textarea id="a_useraddress" name="userAddress"></textarea>
                 </li>
+                <%--收货地址--%>
 
             </ul>
             <div class="clear"></div>

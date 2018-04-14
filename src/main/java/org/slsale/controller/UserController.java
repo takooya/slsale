@@ -1,5 +1,6 @@
 package org.slsale.controller;
 
+import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.tools.javac.util.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,7 @@ import org.slsale.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -116,6 +114,7 @@ public class UserController extends BaseController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            log.error("roleList:",roleList);
             //获取cardTypeList(在DataDictionary表中)
             List<DataDictionary> cardTypeList = null;
 
@@ -146,7 +145,6 @@ public class UserController extends BaseController {
             //查询用户功能
             User user = new User();
             if (null != s_loginCode && !"".equals(s_loginCode)) {
-                log.error("s_loginCode:{}\n防注入:{}", s_loginCode, "%" + SQLTools.transfer(s_loginCode) + "%");
                 user.setLoginCode("%" + SQLTools.transfer(s_loginCode) + "%");
             }
             if (null != s_referCode && !"".equals(s_referCode)) {
@@ -166,13 +164,11 @@ public class UserController extends BaseController {
             if (null != s_isStart && Arrays.binarySearch(new Integer[]{1, 2}, s_isStart) >= 0) {
                 user.setIsStart(s_isStart);
             }
-            log.error("过滤后的user为:{}", user);
+            log.error("分页功能前s_roleId:{}",s_rodeId);
             //分页功能
             PageSupport page = new PageSupport();
             try {
-                log.error("分页用户:{}", user);
                 page.setTotalCount(userService.count(user));
-                log.error("分页用户count数据:{}", userService.count(user));
             } catch (Exception e) {
                 e.printStackTrace();
                 page.setTotalCount(0);
@@ -213,11 +209,11 @@ public class UserController extends BaseController {
             model.addAttribute("roleList", roleList);
             model.addAttribute("cardTypeList", cardTypeList);
             model.addAttribute("page", page);
+            log.error("前台传来了数据如下:\ns_loginCode={}\ns_referCode={}\ns_rodeId={}\ns_isStart={}", s_loginCode, s_referCode, s_rodeId, s_isStart);
+            model.addAttribute("s_rodeId", s_rodeId);
             model.addAttribute("s_loginCode", s_loginCode);
             model.addAttribute("s_referCode", s_referCode);
             model.addAttribute("s_isStart", s_isStart);
-            log.error("s_rodeId:{}", s_rodeId);
-            model.addAttribute("s_rodeId", s_rodeId);
             return new ModelAndView("backend/userlist");
         }
     }
@@ -252,7 +248,6 @@ public class UserController extends BaseController {
     public String logincodeisexist(
             @RequestParam(value = "loginCode", required = false) String loginCode,
             @RequestParam(value = "id", required = false) Integer id) {
-        log.error("loginCode:{},id={}", loginCode, id);
         String result = "failed";
         User formUser = new User();
         formUser.setLoginCode(loginCode);
@@ -272,6 +267,27 @@ public class UserController extends BaseController {
         return result;
     }
 
-
-
+    @RequestMapping(value = "/backend/adduser.html", method = RequestMethod.POST)
+    public ModelAndView adduser(HttpSession session,
+                                @ModelAttribute("addUser") User addUser) {
+        if (session.getAttribute(Constants.SESSION_BASE_MODEL) == null) {
+            return new ModelAndView("redirect:/");
+        } else {
+            try{
+                String idCard = addUser.getIdCard();
+                String ps = idCard.substring(idCard.length() - 6);
+                addUser.setPassword(ps);
+                addUser.setPassword2(ps);
+                addUser.setCreateTime(new Date());
+                addUser.setReferId(this.getCurrentUser().getId());
+                addUser.setReferCode(this.getCurrentUser().getReferCode());
+                addUser.setLastUpdateTime(new Date());
+                log.error("getBirthday无法获取:{}",addUser.getBirthday());
+                userService.addUser(addUser);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return new ModelAndView("redirect:/backend/userlist.html");
+        }
+    }
 }
