@@ -380,7 +380,7 @@ $("#m_logincode").blur(function () {
     }
 });
 
-
+//添加用户时,对email进行验证,验证的具体方法在第一行,即checkEmail方法
 $("#a_email").blur(function () {
     var flag = checkEmail($("#a_email").val());
     if (flag == false) {
@@ -392,6 +392,7 @@ $("#a_email").blur(function () {
         $("#add_formtip").attr("email", "0");
     }
 });
+
 $("#m_email").blur(function () {
     var flag = checkEmail($("#m_email").val());
     if (flag == false) {
@@ -402,14 +403,13 @@ $("#m_email").blur(function () {
         $("#modify_formtip").html("");
         $("#modify_formtip").attr("email", "0");
     }
-
 });
 
 
-//添加用户信息验证
+//添加用户信息验证,返回boolean,即是否可请求
 function addUserFunction() {
     $("#add_formtip").html("");
-    var result = true;
+    var result = true;//可递交状态
     if ($("#selectrole").val() == "") {
         $("#add_formtip").css("color", "red");
         $("#add_formtip").append("<li>对不起，角色不能为空。</li>");
@@ -421,6 +421,7 @@ function addUserFunction() {
         result = false;
     } else {
         if ($("#add_formtip").attr("key") == "1") {
+            $("#add_formtip").css("color", "red");
             $("#add_formtip").append("<li>对不起，该用户名已存在。</li>");
             result = false;
         }

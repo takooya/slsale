@@ -240,7 +240,8 @@
                     <span style="color:red;font-weight: bold;">*</span>
                 </li>
                 <li>
-                    <label>Email：</label><input type="text" id="a_email" name="email"/>
+                    <label>Email：</label>
+                    <input type="text" id="a_email" name="email"/>
                 </li>
                 <li>
                     <label>邮政编码：</label><input type="text" id="a_postCode" name="postCode"
