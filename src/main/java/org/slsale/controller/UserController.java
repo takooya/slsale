@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author takooya
@@ -214,7 +211,7 @@ public class UserController extends BaseController {
             page.setItems(userList);
             model.addAllAttributes(baseModel);
             model.addAttribute("roleList", roleList);
-            model.addAttribute("cardTypeList",cardTypeList);
+            model.addAttribute("cardTypeList", cardTypeList);
             model.addAttribute("page", page);
             model.addAttribute("s_loginCode", s_loginCode);
             model.addAttribute("s_referCode", s_referCode);
@@ -223,5 +220,27 @@ public class UserController extends BaseController {
             model.addAttribute("s_rodeId", s_rodeId);
             return new ModelAndView("backend/userlist");
         }
+    }
+
+    @RequestMapping(value = "/backend/loadUserTypeList.html",
+            produces = "text/html;charset=UTF-8",
+            method = RequestMethod.POST)
+    @ResponseBody
+    public String loadUserTypeList(@RequestParam(value = "s_roleId", required = false) String s_role) {
+        String cjson = "";
+        if (redis.exicts("USER_TYPE")) {
+            cjson = redis.get("USER_TYPE");
+        }else{
+            try {
+                DataDictionary data = new DataDictionary();
+                data.setTypeCode("USER_TYPE");
+                List<DataDictionary> userTypes = dataDictionaryService.getDataDictionaries(data);
+                cjson = JSONObject.toJSONString(userTypes);
+                redis.set("USER_TYPE",cjson);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return cjson;
     }
 }
