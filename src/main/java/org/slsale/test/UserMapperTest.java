@@ -13,6 +13,7 @@ import org.springframework.test.context.support.GenericXmlContextLoader;
 import redis.clients.jedis.Jedis;
 
 import javax.transaction.Transactional;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -56,5 +57,14 @@ public class UserMapperTest {
         redis.set("name","lucy");
         String name = redis.get("name");
         log.info(name);
+    }
+    @Test
+    public void testRandom(){
+        for(int j=0;j<100;j++){
+            int i = new Random().nextInt(90)+10;
+            System.out.println(i);
+        }
+
+
     }
 }

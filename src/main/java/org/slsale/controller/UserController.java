@@ -4,6 +4,7 @@ import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.tools.javac.util.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.slsale.common.Constants;
 import org.slsale.common.PageSupport;
 import org.slsale.common.RedisAPI;
@@ -19,9 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -114,7 +119,7 @@ public class UserController extends BaseController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            log.error("roleList:",roleList);
+            log.error("roleList:", roleList);
             //获取cardTypeList(在DataDictionary表中)
             List<DataDictionary> cardTypeList = null;
 
@@ -164,7 +169,7 @@ public class UserController extends BaseController {
             if (null != s_isStart && Arrays.binarySearch(new Integer[]{1, 2}, s_isStart) >= 0) {
                 user.setIsStart(s_isStart);
             }
-            log.error("分页功能前s_roleId:{}",s_rodeId);
+            log.error("分页功能前s_roleId:{}", s_rodeId);
             //分页功能
             PageSupport page = new PageSupport();
             try {
@@ -273,7 +278,7 @@ public class UserController extends BaseController {
         if (session.getAttribute(Constants.SESSION_BASE_MODEL) == null) {
             return new ModelAndView("redirect:/");
         } else {
-            try{
+            try {
                 String idCard = addUser.getIdCard();
                 String ps = idCard.substring(idCard.length() - 6);
                 addUser.setPassword(ps);
@@ -282,12 +287,68 @@ public class UserController extends BaseController {
                 addUser.setReferId(this.getCurrentUser().getId());
                 addUser.setReferCode(this.getCurrentUser().getReferCode());
                 addUser.setLastUpdateTime(new Date());
-                log.error("getBirthday无法获取:{}",addUser.getBirthday());
+                log.error("getBirthday无法获取:{}", addUser.getBirthday());
                 userService.addUser(addUser);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return new ModelAndView("redirect:/backend/userlist.html");
         }
+    }
+
+
+    @RequestMapping(value = "/backend/upload.html", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object upload(@RequestParam(value = "a_fileInputID", required = false) MultipartFile cardFile,
+                         @RequestParam(value = "a_fileInputBank", required = false) MultipartFile aBankFile,
+                         @RequestParam(value = "m_fileInputID", required = false) MultipartFile mIdFile,
+                         @RequestParam(value = "m_fileInputBank", required = false) MultipartFile mBankFile,
+                         @RequestParam(value = "loginCode", required = false) String loginCode,
+                         HttpSession session, HttpServletRequest request) {
+        log.error("[进入文件上传方法]loginCode:{}", loginCode);
+        String path = session.getServletContext().getRealPath("statics" + File.separator + "uploadfiles");
+        log.error("[进入文件上传方法]新建的path:{}", path);
+        DataDictionary dataDictionary = new DataDictionary();
+        dataDictionary.setTypeCode("PERSONALFILE_SIZE");
+        List<DataDictionary> list = null;
+        try {
+            list = dataDictionaryService.getDataDictionaries(dataDictionary);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int filesize = 50000;
+        if (list != null) {
+            filesize = list.size() == 1 ? Integer.valueOf(list.get(0).getValueName()) : filesize;
+        }
+        if(cardFile!=null){
+            String oldFilename = cardFile.getOriginalFilename();
+            String suffix= FilenameUtils.getExtension(oldFilename);
+            log.error("[进入文件上传方法]获得的客户端文件名:{}", oldFilename);
+            log.error("[进入文件上传方法]获得的客户端文件拓展名:{}", suffix);
+            if(cardFile.getSize()>filesize){
+                return "1";
+            }else if (suffix.equalsIgnoreCase("jpg")||suffix.equalsIgnoreCase("png")
+                    ||suffix.equalsIgnoreCase("jpeg")||suffix.equalsIgnoreCase("pneg")){
+                //源文件从命名:系统毫秒数+100W以内随机数
+                String fileName=System.currentTimeMillis()+""+
+                        new Random().nextInt(900000)+100000+"_IDcard."+suffix;
+                log.error("[进入文件上传方法]新建的fileName:{}", fileName);
+                File targetFile=new File(path,fileName);
+                if(!targetFile.exists()){
+                    targetFile.mkdirs();
+                }
+                //上传操作
+                try {
+                    cardFile.transferTo(targetFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String url=request.getContextPath()+"/statics/uploadfiles/"+fileName;
+                return url;
+            }else {
+                return "2";//格式不正确
+            }
+        }
+        return null;
     }
 }

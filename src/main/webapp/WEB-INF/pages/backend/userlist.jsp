@@ -27,7 +27,8 @@
                     <select name="s_rodeId" style="width: 100px;">
                         <option value="" selected="selected">--请选择--${s_roleId}</option>
                         <c:forEach items="${roleList}" var="role">
-                            <option <c:if test="${s_roleId == role.id}">selected</c:if>
+                            <option
+                                    <c:if test="${s_roleId == role.id}">selected</c:if>
                                     value="${role.id}">${role.roleName}</option>
                         </c:forEach>
                     </select>
@@ -302,17 +303,23 @@
             <div class="clear"></div>
             <ul class="downul">
                 <li>
-                    <label>上传身份证图片
-                        (正反面)：</label>
-                    <input type="hidden" id="v_fileInputIDPath" value=""/>
-                    <div id="v_idPic"></div>
+                    <label>上传身份证图片：</label>
+                    <input type="hidden" id="a_fileInputIDPath" name="idCardPicPath" value=""/>
+                    <input id="a_fileInputID" name="a_fileInputID" type="file"/>
+                    <input type="button" id="a_uploadbtnID" value="上传"/>
+                    <p><span style="color:red;font-weight: bold;">*注：1、正反面.2、大小不得超过50k.3、图片格式：jpg、png、jpeg、pneg</span>
+                    </p>
+                    <div id="a_idPic"></div>
                 </li>
             </ul>
             <ul class="downul">
                 <li>
                     <label>上传银行卡图片：</label>
-                    <input type="hidden" id="v_fileInputBankPath" value=""/>
-                    <div id="v_bankPic"></div>
+                    <input type="hidden" id="a_fileInputBankPath" name="bankPicPath" value=""/>
+                    <input id="a_fileInputBank" name="a_fileInputBank" type="file"/>
+                    <input type="button" id="a_uploadbtnBank" value="上传"/>
+                    <p><span style="color:red;font-weight: bold;">*注：1、大小不得超过50k.2、图片格式：jpg、png、jpeg、pneg</span></p>
+                    <div id="a_bankPic"></div>
                 </li>
             </ul>
         </div>
@@ -321,7 +328,6 @@
             <input type="submit" class="btn btn-primary" value="保存"/>
         </div>
     </form>
-
 </div>
 <%--end添加的模式窗口--%>
 <%@include file="/WEB-INF/pages/common/foot.jsp" %>

@@ -79,6 +79,10 @@
 <script src="/statics/js/jquery.history.js"></script>
 <!-- application script for Charisma demo -->
 <script src="/statics/js/charisma.js"></script>
+<!-- 文件上传用的JS -->
+<script src="/statics/js/ajaxfileupload.js"></script>
+<!-- application script for Charisma demo -->
+<script src="/statics/js/json2.js"></script>
 <%--自定义js文件--%>
 <%--<script src="/statics/localjs/index.js"></script>--%>
 <script src="/statics/localjs/modifypwd.js"></script>

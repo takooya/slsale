@@ -300,11 +300,12 @@ $("#m_roleId").change(function () {
 $("#m_selectusertype").change(function () {
     $("#m_selectusertypename").val($("#m_selectusertype").find("option:selected").text());
 });
-
+// (上传按钮)上传身份证照片,增加的时候
 $("#a_uploadbtnID").click(function () {
+    //0:表示添加,a_fileInputID:表示文件表单域,a_uploadbtnID:表示上传按钮,a_idPic:显示图片的区域,a_fileInputIDPath:记录文件路径的隐藏域
     TajaxFileUpload('0', 'a_fileInputID', 'a_uploadbtnID', 'a_idPic', 'a_fileInputIDPath');
 });
-
+// (上传按钮)上传银行卡照片,增加的时候
 $("#a_uploadbtnBank").click(function () {
     TajaxFileUpload('0', 'a_fileInputBank', 'a_uploadbtnBank', 'a_bankPic', 'a_fileInputBankPath');
 });
@@ -563,6 +564,9 @@ function delpic(id, closeSpan, uploadBtn, obj, picpath, picText, fileinputid) {
 
 }
 
+
+//0:表示添加,t1=a_fileInputID:表示文件表单域,t2=a_uploadbtnID:表示上传按钮,
+// t3=a_idPic:显示图片的区域,t4=a_fileInputIDPath:记录文件路径的隐藏域
 //'0','a_fileInputID','a_uploadbtnID','a_idPic','a_fileInputIDPath'
 function TajaxFileUpload(flag, t1, t2, t3, t4) {
     if ($("#" + t1 + "").val() == '' || $("#" + t1 + "").val() == null) {
@@ -572,21 +576,24 @@ function TajaxFileUpload(flag, t1, t2, t3, t4) {
         ({
             url: '/backend/upload.html', //处理上传文件的服务端
             secureuri: false,
-            fileElementId: t1,
+            fileElementId: t1,//文件表单域
             dataType: 'json',
             success: function (data) {
+                //data为图片的服务器路径
                 data = data.replace(/(^\s*)|(\s*$)/g, "");
-                if (data == "1") {
+                if (data == "1") {//自定义返回值:1=超出上传文件大小
                     alert("上传图片大小不得超过50K！");
                     $("#uniform-" + t1 + " span:first").html('无文件');
-                    $("input[name='" + t1 + "']").change(function () {//标签选择器
+                    //标签选择器:选择name=*的input标签,其值发生改变时
+                    $("input[name='" + t1 + "']").change(function () {
                         var fn = $("input[name='" + t1 + "']").val(); //取出要上传的文件名
                         if ($.browser.msie) {//判断浏览器（因为不同的浏览器，取出来内容不一样）
+                            //ie浏览器获fn=路径+文件名,Chrome浏览器fn=文件名(我们只保留文件名)
                             fn = fn.substring(fn.lastIndexOf("\\") + 1);//我们只取文件名
                         }
                         $("#uniform-" + t1 + " span:first").html(fn);
                     });
-                } else if (data == "2") {
+                } else if (data == "2") {//自定义返回值:2=格式不正确
                     alert("上传图片格式不正确！");
                     $("#uniform-" + t1 + " span:first").html('无文件');
                     $("input[name='" + t1 + "']").change(function () {
@@ -597,8 +604,11 @@ function TajaxFileUpload(flag, t1, t2, t3, t4) {
                         $("#uniform-" + t1 + " span:first").html(fn);
                     });
                 } else {
-                    //?m="+Math.random() 是为了解决浏览器缓存
-                    $("#" + t3 + "").append("<p><span onclick=\"delpic('" + flag + "','" + t3 + "','" + t2 + "',this,'" + data + "','" + t4 + "','" + t1 + "');\">x</span><img src=\"" + data + "?m=" + Math.random() + "\" /></p>");
+                    // t3=a_idPic:显示图片的区域,t4=a_fileInputIDPath:记录文件路径的隐藏域,t2=a_uploadbtnID:表示上传按钮,t1=a_fileInputID:表示文件表单域
+                    $("#" + t3 + "").append("<p><span onclick=\"delpic('" + flag + "','" + t3 + "','" + t2 + "',this,'" + data +
+                        "','" + t4 + "','" + t1 + "');\">x</span>" +
+                        "<img src=\"" + data + "?m=" + Math.random() + "\" /></p>");
+                    //(上面)?m="+Math.random() 是为了解决浏览器缓存
                     $("#" + t2 + "").hide();
                     $("#" + t4 + "").val(data);
                     $("input[name='" + t1 + "']").change(function () {
