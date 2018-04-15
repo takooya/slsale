@@ -547,6 +547,10 @@ function modifyUserFunction() {
     return result;
 }
 
+
+//上传图片中的删除按钮
+//id:表示的是增加还是修改(修改传的是数据id),closeSpan:显示图片路径的span,uploadBtn:上传按钮,
+//obj:当前对象,picpath:图片路径,picText:记录文件路径的隐藏域,fileinputid:表示文件表单域
 function delpic(id, closeSpan, uploadBtn, obj, picpath, picText, fileinputid) {
     //delete
     $.post("/backend/delpic.html", {'id': id, 'picpath': picpath}, function (result) {
@@ -554,12 +558,12 @@ function delpic(id, closeSpan, uploadBtn, obj, picpath, picText, fileinputid) {
             alert("删除成功！");
             $('#' + picText).val('');
             $("#uniform-" + fileinputid + " span:first").html('无文件');
-            document.getElementById(closeSpan).removeChild(obj.parentElement);
-            //$("#"+closeSpan).html('');这种方式跟上面一样效果
-            //最后再把上传的按钮显示
-            $('#' + uploadBtn).show();
-        } else
+            //document.getElementById(closeSpan).removeChild(obj.parentElement);
+            $("#"+closeSpan).html('');//这种方式跟上面一样效果
+            $('#' + uploadBtn).show();//最后再把上传的按钮显示
+        } else{
             alert("删除失败！");
+        }
     }, 'html');
 
 }

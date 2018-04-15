@@ -351,4 +351,10 @@ public class UserController extends BaseController {
         }
         return null;
     }
+
+    @RequestMapping(value = "/backend/delpic.html", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object upload(){
+        return null;
+    }
 }
