@@ -20,7 +20,7 @@ public class PageSupport {
     /**
      * 每页显示多少条
      */
-    private Integer pageSize = 2;
+    private Integer pageSize = 10;
     /**
      * 当前页
      */

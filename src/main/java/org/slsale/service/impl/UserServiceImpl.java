@@ -46,4 +46,14 @@ public class UserServiceImpl implements UserService {
     public List<User> getUserList(User user)throws Exception {
         return userMapper.getUserList(user);
     }
+
+    @Override
+    public User getUserById(User user) throws Exception {
+        return userMapper.getUserById(user);
+    }
+
+    @Override
+    public Integer deleteUser(User delUser) throws Exception {
+        return userMapper.deleteUser(delUser);
+    }
 }

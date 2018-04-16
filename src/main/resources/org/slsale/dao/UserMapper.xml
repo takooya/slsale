@@ -92,4 +92,13 @@
         </trim>
         order by createTime DESC limit #{startNum},#{pageSize}
     </select>
+    <!--User getUserById(User user)throws Exception;-->
+    <select id="getUserById" parameterType="user" resultType="user">
+        SELECT *
+        FROM au_user
+        WHERE id = #{id}
+    </select>
+    <delete id="deleteUser" parameterType="user">
+        DELETE FROM au_user WHERE id = #{id};
+    </delete>
 </mapper>

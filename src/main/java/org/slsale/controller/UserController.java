@@ -1,24 +1,19 @@
 package org.slsale.controller;
 
-import com.alibaba.druid.sql.visitor.functions.Substring;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.net.httpserver.Authenticator;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
-import com.sun.tools.javac.util.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.slsale.common.Constants;
-import org.slsale.common.PageSupport;
-import org.slsale.common.RedisAPI;
-import org.slsale.common.SQLTools;
+import org.slsale.common.*;
 import org.slsale.pojo.DataDictionary;
-import org.slsale.pojo.Menu;
 import org.slsale.pojo.Role;
 import org.slsale.pojo.User;
 import org.slsale.service.DataDictionaryService;
 import org.slsale.service.RoleService;
 import org.slsale.service.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -49,6 +45,9 @@ public class UserController extends BaseController {
     @Autowired
     private DataDictionaryService dataDictionaryService;
 
+    /**
+     * 修改本人密码
+     */
     @RequestMapping(value = "/backend/modify.html", method = RequestMethod.POST)
     @ResponseBody
     public Object modify(HttpSession session, @RequestParam String info) {
@@ -88,7 +87,9 @@ public class UserController extends BaseController {
         return "success";
     }
 
-
+    /**
+     * 获得用户列表
+     */
     @RequestMapping(value = "/backend/userlist.html")
     public ModelAndView userlist(Model model, HttpSession session,
                                  @RequestParam(value = "s_loginCode", required = false) String s_loginCode,
@@ -225,9 +226,10 @@ public class UserController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/backend/loadUserTypeList.html",
-            produces = "text/html;charset=UTF-8",
-            method = RequestMethod.POST)
+    /**
+     * 加载用户类型列表
+     */
+    @RequestMapping(value = "/backend/loadUserTypeList.html", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
     @ResponseBody
     public String loadUserTypeList(@RequestParam(value = "s_roleId", required = false) String s_role) {
         String cjson = "";
@@ -248,9 +250,10 @@ public class UserController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/backend/logincodeisexist.html",
-            produces = "text/html;charset=UTF-8",
-            method = RequestMethod.POST)
+    /**
+     * 判断logincode是否存在
+     */
+    @RequestMapping(value = "/backend/logincodeisexist.html", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
     @ResponseBody
     public String logincodeisexist(
             @RequestParam(value = "loginCode", required = false) String loginCode,
@@ -274,9 +277,13 @@ public class UserController extends BaseController {
         return result;
     }
 
+    /**
+     * 管理员添加用户
+     */
     @RequestMapping(value = "/backend/adduser.html", method = RequestMethod.POST)
     public ModelAndView adduser(HttpSession session,
-                                @ModelAttribute("addUser") User addUser) {
+                                @ModelAttribute("addUser") User addUser,
+                                @RequestParam(value = "birthday") String birthday) {
         if (session.getAttribute(Constants.SESSION_BASE_MODEL) == null) {
             return new ModelAndView("redirect:/");
         } else {
@@ -289,7 +296,8 @@ public class UserController extends BaseController {
                 addUser.setReferId(this.getCurrentUser().getId());
                 addUser.setReferCode(this.getCurrentUser().getReferCode());
                 addUser.setLastUpdateTime(new Date());
-                log.error("getBirthday无法获取:{}", addUser.getBirthday());
+                Date birthdayDate = (new SimpleDateFormat("MM/dd/yyyy")).parse(birthday);
+                addUser.setBirthday(birthdayDate);
                 userService.addUser(addUser);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -298,7 +306,9 @@ public class UserController extends BaseController {
         }
     }
 
-
+    /**
+     * 上传图片
+     */
     @RequestMapping(value = "/backend/upload.html", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object upload(@RequestParam(value = "a_fileInputID", required = false) MultipartFile cardFile,
@@ -325,25 +335,25 @@ public class UserController extends BaseController {
             filesize = list.size() == 1 ? Integer.valueOf(list.get(0).getValueName()) : filesize;
         }
         //上传图片的文件对象
-        if(cardFile!=null){
+        if (cardFile != null) {
             //获得的是客户端的文件名,例如:img.jpg(在前端我们已经限制不传客户端的路径)
             String oldFilename = cardFile.getOriginalFilename();
-            String suffix= FilenameUtils.getExtension(oldFilename);
+            String suffix = FilenameUtils.getExtension(oldFilename);
             log.error("[进入文件上传方法]获得的客户端文件名:{}", oldFilename);
             log.error("[进入文件上传方法]获得的客户端文件拓展名:{}", suffix);
             //如果上传文件大小超出我们的限制
-            if(cardFile.getSize()>filesize){
+            if (cardFile.getSize() > filesize) {
                 return "1";
                 //下面是判断上传文件的后缀名(判断文件类型)
-            }else if (suffix.equalsIgnoreCase("jpg")||suffix.equalsIgnoreCase("png")
-                    ||suffix.equalsIgnoreCase("jpeg")||suffix.equalsIgnoreCase("pneg")){
+            } else if (suffix.equalsIgnoreCase("jpg") || suffix.equalsIgnoreCase("png")
+                    || suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("pneg")) {
                 //源文件(存放在服务器时的文件名)重命名:系统毫秒数+100W以内随机数
-                String fileName=System.currentTimeMillis()+""+
-                        new Random().nextInt(900000)+100000+"_IDcard."+suffix;
+                String fileName = System.currentTimeMillis() + "" +
+                        new Random().nextInt(900000) + 100000 + "_IDcard." + suffix;
                 log.error("[进入文件上传方法]新建的fileName:{}", fileName);
-                File targetFile=new File(path,fileName);
+                File targetFile = new File(path, fileName);
                 //判断文件是否存在
-                if(!targetFile.exists()){
+                if (!targetFile.exists()) {
                     //创建一个空文件
                     targetFile.mkdirs();
                 }
@@ -355,40 +365,48 @@ public class UserController extends BaseController {
                     e.printStackTrace();
                 }
                 //获取图片在服务器的(工程路径+文件名)
-                String url=request.getContextPath()+"/statics/uploadfiles/"+fileName;
+                String url = request.getContextPath() + "/statics/uploadfiles/" + fileName;
                 return url;
-            }else {
+            } else {
                 return "2";//格式不正确
             }
         }
         return null;
     }
 
+    /**
+     * 删除图片
+     */
     @RequestMapping(value = "/backend/delpic.html", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public String delpic(@RequestParam(value = "picpath")String picpath,
-                         @RequestParam(value = "id")String id,
-                         HttpSession session){
+    public String delpic(@RequestParam(value = "picpath") String picpath,
+                         @RequestParam(value = "id") Integer id,
+                         HttpSession session) {
         //初始化为:删除失败
-        String result="failed";
+        String result = "failed";
         //当传入的图片路径为空,返回success
-        if(picpath==null&&picpath.equals("")){
+        if (picpath == null || picpath.trim().equals("")) {
             return "success";
-        }else{//解析图片路径
-            String[] paths=picpath.split("/");
-            String path=session.getServletContext().getRealPath(paths[1]+ File.separator+paths[2]+ File.separator+paths[3]);
-            File file=new File(path);
-            if(file.exists()){
+        } else {//解析图片路径
+            String[] paths = picpath.split("/");
+            log.warn("解析图片路径,整体输出:{}", paths);
+            for (String path : paths) {
+                log.warn("解析图片路径,分别输出:{}", path);
+            }
+            //path[0]:是一个空字符串;path[1]:statics,path[2]:文件名,path[3]:拓展名
+            String path = session.getServletContext().getRealPath(paths[1] + File.separator + paths[2] + File.separator + paths[3]);
+            File file = new File(path);
+            if (file.exists()) {
                 //删除图片
-                if(file.delete()){
-                    if(id.equals("0")){//增加页面,删除上传图片
-                        result= "success";
-                    }else {//修改页面图,删除上传图片
-                        User user=new User();
+                if (file.delete()) {
+                    if (id.equals("0")) {//增加页面,删除上传图片
+                        result = "success";
+                    } else {//修改页面图,删除上传图片
+                        User user = new User();
                         user.setId(Integer.valueOf(id));
-                        if(picpath.indexOf("_IDcard")!=-1){
+                        if (picpath.indexOf("_IDcard") != -1) {
                             user.setIdCardPicPath(picpath);
-                        }else if(picpath.indexOf("_bank")!=-1){
+                        } else if (picpath.indexOf("_bank") != -1) {
                             user.setBankPicPath(picpath);
                         }
                         //将user赋值并修改原数据
@@ -397,5 +415,94 @@ public class UserController extends BaseController {
             }
         }
         return result;
+    }
+
+    /**
+     * 管理员查看某个用户信息
+     */
+    @RequestMapping(value = "/backend/getuser.html", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+    @ResponseBody
+    public String getuser(@RequestParam(value = "id") Integer id,
+                          HttpSession session) {
+        String result = "failed";
+        if (id == null) {
+            return "nodata";
+        }
+        User user = new User();
+        user.setId(id);
+        User v_user = null;
+        try {
+            v_user = userService.getUserById(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "failed";
+        }
+        if (v_user == null) {
+            return "nodata";
+        }
+        //格式化显示的时间
+        result = JSON.toJSONStringWithDateFormat(v_user, "yyyy-MM-dd");
+        return result;
+    }
+
+    /**
+     * 管理员修改用户
+     */
+    @RequestMapping(value = "/backend/modifyuser.html", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+    public ModelAndView modifyuser(HttpSession session, @ModelAttribute("modifyUser") User modifyuser) {
+        log.warn("modifyuser:{}", modifyuser);
+        if (session.getAttribute(Constants.SESSION_BASE_MODEL) == null) {
+            return new ModelAndView("redirect:/");
+        } else {
+            if (modifyuser == null) {
+                return new ModelAndView("/backend/userlist.html");
+            } else {
+                try {
+                    User targetUser = null;
+                    log.error("getBirthday无法获取:{}", modifyuser.getBirthday());
+                    targetUser = userService.getUserById(modifyuser);
+                    //Bean数据的copy方法,注意被copy的对象不是同类型也可以使用
+                    //使用此方法注意两个bean的属性名要一致
+                    //此方法取两个对象属性名相同的合集(相同的部分)赋值
+                    BeanUtils.copyProperties(modifyuser, targetUser, ForBeanUtils.getNullPropertiesName(modifyuser));
+                    if (userService.modifyUser(targetUser) <= 0) {
+                        log.warn("复制后的目标user:{}", targetUser);
+                        return new ModelAndView("redirect:/backend/userlist.html");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new ModelAndView("redirect:/backend/userlist.html");
+                }
+                return new ModelAndView("forward:/backend/userlist.html");
+            }
+        }
+    }
+
+    @RequestMapping(value = "/backend/deluser.html")
+    @ResponseBody
+    public String deluser(@RequestParam(value = "delId") Integer delId,
+                          @RequestParam(value = "delIdCardPicPath") String delIdCardPicPath,
+                          @RequestParam(value = "delBankPicPath") String delBankPicPath,
+                          @RequestParam(value = "delUserType") Integer delUserType,
+                          HttpSession session) {
+        User delUser=new User();
+        delUser.setId(delId);
+        if (session.getAttribute(Constants.SESSION_BASE_MODEL) == null) {
+            return "redirect:/";
+        } else {
+            if (delUserType == 2 || delUserType == 3 || delUserType == 4) {
+                return "notallow";
+            }
+            if (this.delpic(delIdCardPicPath, delId, session).equals("success") && this.delpic(delBankPicPath, delId, session).equals("success")) {
+                try {
+                    if(userService.deleteUser(delUser) > 0)
+                        return "success";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "failed";
+                }
+            }
+        }
+        return "failed";
     }
 }

@@ -22,4 +22,8 @@ public interface UserService {
     int count(User user)throws Exception;
     /**  获取用户列表 */
     List<User> getUserList(User user)throws Exception;
+
+    User getUserById(User user)throws Exception;
+
+    Integer deleteUser(User delUser)throws Exception;
 }

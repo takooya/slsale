@@ -40,6 +40,7 @@ $('.addusercancel').click(function (e) {
     $("#a_useraddress").val('');
 });
 
+//查看用户按钮
 $('.viewuser').click(function (e) {
     var m_id = $(this).attr('id');
     $.ajax({
@@ -107,6 +108,7 @@ $('.viewuser').click(function (e) {
     });
 });
 
+//修改用户
 $('.modifyuser').click(function (e) {
     var m_id = $(this).attr('id');
     $.ajax({
@@ -134,13 +136,14 @@ $('.modifyuser').click(function (e) {
                 var cardType = m.cardType;
                 var cardTypeName = m.cardTypeName;
                 $("#m_cardtype").html('');
-                if (cardType == null || cardType == "")
-                    $("#m_cardtype").append("<option value=\"\" selected=\"selected\">--请选择--</option>");
+                if (cardType == null || cardType == ""){
+                    $("#m_cardtype").append("<option value='' selected='selected'>--请选择--</option>");
+                }
                 for (var i = 0; i < cardTypeListJson.length - 1; i++) {
                     if (cardTypeListJson[i].valueId == cardType) {
-                        $("#m_cardtype").append("<option value=\"" + cardType + "\" selected=\"selected\">" + cardTypeName + "</option>");
+                        $("#m_cardtype").append("<option value='" + cardType + "' selected='selected'>" + cardTypeName + "</option>");
                     } else {
-                        $("#m_cardtype").append("<option value=\"" + cardTypeListJson[i].valueId + "\">" + cardTypeListJson[i].valueName + "</option>");
+                        $("#m_cardtype").append("<option value='" + cardTypeListJson[i].valueId + "'>" + cardTypeListJson[i].valueName + "</option>");
                     }
                 }
                 $("#m_roleId").html('');
@@ -148,12 +151,12 @@ $('.modifyuser').click(function (e) {
                 var roleId = m.roleId;
                 var roleName = m.roleName;
                 if (roleId == null || roleId == "")
-                    $("#m_roleId").append("<option value=\"\" selected=\"selected\">--请选择--</option>");
+                    $("#m_roleId").append("<option value='' selected='selected'>--请选择--</option>");
                 for (var i = 0; i < roleListJson.length - 1; i++) {
                     if (roleListJson[i].id == roleId) {
-                        $("#m_roleId").append("<option value=\"" + roleId + "\" selected=\"selected\">" + roleName + "</option>");
+                        $("#m_roleId").append("<option value='" + roleId + "' selected='selected'>" + roleName + "</option>");
                     } else {
-                        $("#m_roleId").append("<option value=\"" + roleListJson[i].id + "\">" + roleListJson[i].roleName + "</option>");
+                        $("#m_roleId").append("<option value='" + roleListJson[i].id + "'>" + roleListJson[i].roleName + "</option>");
                     }
                 }
                 $("#m_selectusertypename").val(m.userTypeName);
