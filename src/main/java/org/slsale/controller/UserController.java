@@ -2,6 +2,8 @@ package org.slsale.controller;
 
 import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.net.httpserver.Authenticator;
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import com.sun.tools.javac.util.ArrayUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -306,12 +308,14 @@ public class UserController extends BaseController {
                          @RequestParam(value = "loginCode", required = false) String loginCode,
                          HttpSession session, HttpServletRequest request) {
         log.error("[进入文件上传方法]loginCode:{}", loginCode);
+        //创建服务器存放图片的路径
         String path = session.getServletContext().getRealPath("statics" + File.separator + "uploadfiles");
         log.error("[进入文件上传方法]新建的path:{}", path);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.setTypeCode("PERSONALFILE_SIZE");
         List<DataDictionary> list = null;
         try {
+            //从数据库获得上传文件大小的限制
             list = dataDictionaryService.getDataDictionaries(dataDictionary);
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,29 +324,37 @@ public class UserController extends BaseController {
         if (list != null) {
             filesize = list.size() == 1 ? Integer.valueOf(list.get(0).getValueName()) : filesize;
         }
+        //上传图片的文件对象
         if(cardFile!=null){
+            //获得的是客户端的文件名,例如:img.jpg(在前端我们已经限制不传客户端的路径)
             String oldFilename = cardFile.getOriginalFilename();
             String suffix= FilenameUtils.getExtension(oldFilename);
             log.error("[进入文件上传方法]获得的客户端文件名:{}", oldFilename);
             log.error("[进入文件上传方法]获得的客户端文件拓展名:{}", suffix);
+            //如果上传文件大小超出我们的限制
             if(cardFile.getSize()>filesize){
                 return "1";
+                //下面是判断上传文件的后缀名(判断文件类型)
             }else if (suffix.equalsIgnoreCase("jpg")||suffix.equalsIgnoreCase("png")
                     ||suffix.equalsIgnoreCase("jpeg")||suffix.equalsIgnoreCase("pneg")){
-                //源文件从命名:系统毫秒数+100W以内随机数
+                //源文件(存放在服务器时的文件名)重命名:系统毫秒数+100W以内随机数
                 String fileName=System.currentTimeMillis()+""+
                         new Random().nextInt(900000)+100000+"_IDcard."+suffix;
                 log.error("[进入文件上传方法]新建的fileName:{}", fileName);
                 File targetFile=new File(path,fileName);
+                //判断文件是否存在
                 if(!targetFile.exists()){
+                    //创建一个空文件
                     targetFile.mkdirs();
                 }
                 //上传操作
                 try {
+                    //将前台接收的cardFile内容transfer给targetFIle
                     cardFile.transferTo(targetFile);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                //获取图片在服务器的(工程路径+文件名)
                 String url=request.getContextPath()+"/statics/uploadfiles/"+fileName;
                 return url;
             }else {
@@ -354,7 +366,36 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/backend/delpic.html", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object upload(){
-        return null;
+    public String delpic(@RequestParam(value = "picpath")String picpath,
+                         @RequestParam(value = "id")String id,
+                         HttpSession session){
+        //初始化为:删除失败
+        String result="failed";
+        //当传入的图片路径为空,返回success
+        if(picpath==null&&picpath.equals("")){
+            return "success";
+        }else{//解析图片路径
+            String[] paths=picpath.split("/");
+            String path=session.getServletContext().getRealPath(paths[1]+ File.separator+paths[2]+ File.separator+paths[3]);
+            File file=new File(path);
+            if(file.exists()){
+                //删除图片
+                if(file.delete()){
+                    if(id.equals("0")){//增加页面,删除上传图片
+                        result= "success";
+                    }else {//修改页面图,删除上传图片
+                        User user=new User();
+                        user.setId(Integer.valueOf(id));
+                        if(picpath.indexOf("_IDcard")!=-1){
+                            user.setIdCardPicPath(picpath);
+                        }else if(picpath.indexOf("_bank")!=-1){
+                            user.setBankPicPath(picpath);
+                        }
+                        //将user赋值并修改原数据
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

@@ -568,7 +568,6 @@ function delpic(id, closeSpan, uploadBtn, obj, picpath, picText, fileinputid) {
 
 }
 
-
 //0:表示添加,t1=a_fileInputID:表示文件表单域,t2=a_uploadbtnID:表示上传按钮,
 // t3=a_idPic:显示图片的区域,t4=a_fileInputIDPath:记录文件路径的隐藏域
 //'0','a_fileInputID','a_uploadbtnID','a_idPic','a_fileInputIDPath'
