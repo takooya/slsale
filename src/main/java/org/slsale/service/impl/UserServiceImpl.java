@@ -1,6 +1,7 @@
 package org.slsale.service.impl;
 
 import org.slsale.dao.UserMapper;
+import org.slsale.pojo.Role;
 import org.slsale.pojo.User;
 import org.slsale.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +56,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer deleteUser(User delUser) throws Exception {
         return userMapper.deleteUser(delUser);
+    }
+
+    /**  将用户表中所有roleId=role.id的roleName改为:role.roleName */
+    @Override
+    public int changeRoleName(Role role) throws Exception{
+        return userMapper.changeRoleName(role);
     }
 }

@@ -90,7 +90,12 @@
             <if test="referId!=null">and referId = #{referId}</if>
             <if test="userType!=null">and userType = #{userType}</if>
         </trim>
-        order by createTime DESC limit #{startNum},#{pageSize}
+        order by createTime DESC
+        <if test="pageSize!=null">
+            limit
+            <if test="startNum!=null">#{startNum},</if>
+            #{pageSize}
+        </if>
     </select>
     <!--User getUserById(User user)throws Exception;-->
     <select id="getUserById" parameterType="user" resultType="user">
@@ -99,6 +104,13 @@
         WHERE id = #{id}
     </select>
     <delete id="deleteUser" parameterType="user">
-        DELETE FROM au_user WHERE id = #{id};
+        DELETE FROM au_user
+        WHERE id = #{id};
     </delete>
+    <!--UPDATE au_user SET country='中国' WHERE country='China'-->
+    <update id="changeRoleName" parameterType="role">
+        UPDATE au_user
+        SET roleName = #{roleName}
+        WHERE roleId = #{id}
+    </update>
 </mapper>

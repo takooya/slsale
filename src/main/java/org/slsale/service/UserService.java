@@ -1,5 +1,6 @@
 package org.slsale.service;
 
+import org.slsale.pojo.Role;
 import org.slsale.pojo.User;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface UserService {
     User getUserById(User user)throws Exception;
 
     Integer deleteUser(User delUser)throws Exception;
+
+    int changeRoleName(Role role)throws Exception;
 }

@@ -1,5 +1,6 @@
 package org.slsale.dao;
 
+import org.slsale.pojo.Role;
 import org.slsale.pojo.User;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +29,6 @@ public interface UserMapper {
     User getUserById(User user)throws Exception;
 
     Integer deleteUser(User delUser)throws Exception;
+    /**  将用户表中所有roleId=role.id的roleName改为:role.roleName */
+    int changeRoleName(Role role)throws Exception;
 }
