@@ -14,8 +14,13 @@
         SELECT *
         FROM au_function
         WHERE au_function.`parentId` = #{id} AND au_function.`id` IN
-                                             (SELECT au_authority.`functionId`
-                                              FROM au_authority
-                                              WHERE au_authority.`roleId` = #{roleId})
+                                                 (SELECT au_authority.`functionId`
+                                                  FROM au_authority
+                                                  WHERE au_authority.`roleId` = #{roleId})
+    </select>
+    <select id="getSubFuncList" parameterType="function" resultType="function">
+        SELECT *
+        FROM au_function
+        WHERE au_function.`parentId` = #{id}
     </select>
 </mapper>

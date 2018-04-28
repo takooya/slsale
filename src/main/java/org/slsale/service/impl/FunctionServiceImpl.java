@@ -28,4 +28,9 @@ public class FunctionServiceImpl implements FunctionService {
     public List<Function> getSubFunctionList(Function function) throws Exception {
         return functionMapper.getSubFunctionList(function);
     }
+
+    @Override
+    public List<Function> getSubFuncList(Function function) throws Exception {
+        return functionMapper.getSubFuncList(function);
+    }
 }

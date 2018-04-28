@@ -13,4 +13,6 @@ import java.util.List;
 public interface FunctionService {
     List<Function> getMainFunctionList(Authority authority)throws Exception;
     List<Function> getSubFunctionList(Function function)throws Exception;
+
+    List<Function> getSubFuncList(Function function)throws Exception;
 }

@@ -13,8 +13,7 @@ $("#loginbtn").click(function () {
         $("#formtip").css("color","red");
         $("#formtip").html("对不起,密码不能为空");
     }else{
-        $("#formtip").html("");
-
+        $("#formtip").html("<img src='statics/img/ajax-loaders/ajax-loader-5.gif' title='ajax-loader-7.gif'>");
         $.ajax({
             type:'POST',
             url:'/login.html',

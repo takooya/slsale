@@ -12,6 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.GenericXmlContextLoader;
 
+import java.util.List;
+
 /**
  * @Author takooya
  * @Description
@@ -28,5 +30,13 @@ public class UserServiceImplTest extends TestCase {
         String info= SQLTools.transfer("           ");
         log.error("**********:{}","!"+info+"!");
     }
-
+    @Test
+    public void testGetUserList() throws Exception {
+        User user=new User();
+        user.setRoleId(2);
+        List<User> userList = userService.getUserList(user);
+        for(int i=0;i<userList.size();i++){
+            log.warn("userList({})={}",i,userList.get(i).getUserName());
+        }
+    }
 }

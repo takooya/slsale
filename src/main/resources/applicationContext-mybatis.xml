@@ -61,16 +61,18 @@ SQLException,如设为0则无限期等待。单位毫秒。Default: 0 -->
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
     </bean>
+
     <!-- AOP事务处理  -->
     <aop:aspectj-autoproxy/>
     <aop:config proxy-target-class="true">
         <aop:pointcut expression="execution(* *org.slsale.service..*(..))" id="transService"/>
+        <!--advice-ref:织入的方法  pointcut-ref:切点位置-->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="transService"/>
     </aop:config>
-    <!-- txAdvice:需要定义事务管理器，进行事务处理 -->
+    <!-- txAdvice:需要定义事务管理器，进行事务处理 织入过程 -->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="hl*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="hl*" propagation="REQUIRED"  rollback-for="Exception"/>
         </tx:attributes>
     </tx:advice>
 

@@ -12,6 +12,18 @@ import java.util.List;
  */
 @Repository
 public interface RoleMapper {
-    /**  获取角色列表 */
-    List<Role> getRoleList()throws Exception;
+    /**
+     * 获取角色列表
+     */
+    List<Role> getRoleList() throws Exception;
+
+    int countRoleByCodeOrName(Role role) throws Exception;
+
+    int addRole(Role role) throws Exception;
+
+    int updateRoleNameAndRoleCode(Role role) throws Exception;
+
+    int delRole(Role role) throws Exception;
+
+    List<Role> getRoleIdAndNameList()throws Exception;
 }

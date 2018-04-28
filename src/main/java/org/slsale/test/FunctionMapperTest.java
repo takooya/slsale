@@ -43,4 +43,12 @@ public class FunctionMapperTest {
         log.error("getSubFunctionListTest():{}",subFunctionList);
     }
 
+    @Test
+    public void getSubFuncListTest() throws Exception {
+        Function function=new Function();
+        function.setId(0);
+        List<Function> subFunctionList = functionMapper.getSubFuncList(function);
+        log.error("getSubFuncListTest():{}",subFunctionList);
+    }
+
 }

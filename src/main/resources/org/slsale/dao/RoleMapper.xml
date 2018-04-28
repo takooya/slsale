@@ -3,6 +3,37 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.slsale.dao.RoleMapper">
     <select id="getRoleList" resultType="role">
-        SELECT * FROM au_role
+        SELECT *
+        FROM au_role
     </select>
+    <select id="getRoleIdAndNameList" resultType="role">
+        SELECT
+            id,
+            roleName
+        FROM au_role
+        WHERE isStart != 0
+    </select>
+    <select id="countRoleByCodeOrName" parameterType="role" resultType="int">
+        SELECT count(1)
+        FROM au_role
+        WHERE (roleCode = #{roleCode} OR roleName = #{roleName})
+              AND id != #{id}
+    </select>
+    <insert id="addRole" parameterType="role">
+        INSERT INTO au_role (id, roleCode, roleName, createDate, isStart, createdBy)
+        VALUES (NULL, #{roleCode}, #{roleName}, #{createDate}, #{isStart}, #{createdBy})
+    </insert>
+    <!--role有id,roleCode,roleName-->
+    <update id="updateRoleNameAndRoleCode">
+        UPDATE au_role
+        <set>
+            <if test="roleName!=null">roleName=#{roleName},</if>
+            <if test="roleCode!=null">roleCode=#{roleCode},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <delete id="delRole" parameterType="role">
+        DELETE FROM au_role
+        WHERE id = #{id}
+    </delete>
 </mapper>
