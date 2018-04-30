@@ -35,24 +35,29 @@ $(".roleNameAuthority").click(function () {
                     listr += "</ul></li>";
                 }
                 $("#functionList").html(listr);
+                //通过roleId去回显勾选checkbox框的状态(循环)
+                $("#functionList :checkbox").each(function () {
+                    var checkbox = $(this);
+                    $.ajax({
+                        url: '/backend/getAuthorityDefault.html',
+                        type: 'POST',
+                        data: {rid: $("#roleidhide").val(), fid: $(this).attr("funcid")},
+                        dataType: 'html',
+                        timeout: 1000,
+                        error: function () {
+                            alert("回选勾选失败!");
+                        },
+                        success: function (result) {
+                            if ("success" == result) {
+                                checkbox.attr("checked", true);
+                            } else {
+                                checkbox.attr("checked", false);
+                            }
+                        }
+                    });
+                });
             }
         }
-    });
-    //通过roleId去回显勾选checkbox框的状态(循环)
-    $("#functionList :checkbox").each(function(){
-       var checkbox=$(this);
-       $.ajax({
-           url:'/backend/getAuthorityDefault.html',
-           type: 'POST',
-           data: {rId: roleId},
-           dataType: 'json',
-           timeout: 1000,
-           error: function () {
-           },
-           success: function (result) {
-
-           }
-       });
     });
 });
 
@@ -82,6 +87,6 @@ $("#unSelect").click(function () {//全不选
 
 $("#reverse").click(function () {//反选
     $("#functionList :checkbox").each(function () {
-        $(this).attr("checked",!$(this).attr("checked"));
+        $(this).attr("checked", !$(this).attr("checked"));
     });
 });

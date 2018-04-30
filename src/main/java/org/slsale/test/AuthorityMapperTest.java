@@ -32,7 +32,12 @@ public class AuthorityMapperTest extends TestCase {
         int i = mapper.addAuthority(authority);
         assertEquals(i,1);
     }
-
+    @Test
+    public void testGetAuthorityByRidAndFid() throws Exception {
+        Authority authority = mapper.getAuthorityByRidAndFid(this.authority);
+        log.warn("authority={}",authority);
+        assertNotNull(authority);
+    }
     @Test
     public void testDeleteAuthority() throws Exception {
         authority.setId(1707);

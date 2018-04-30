@@ -7,6 +7,11 @@
         FROM au_authority
         WHERE id = #{id}
     </select>
+    <select id="getAuthorityByRidAndFid" parameterType="authority" resultType="authority">
+        SELECT *
+        FROM au_authority
+        WHERE roleId = #{roleId} AND functionId = #{functionId}
+    </select>
     <select id="getAuthorities" parameterType="authority" resultType="authority">
         SELECT *
         FROM au_authority
@@ -27,6 +32,7 @@
         VALUES (#{roleId}, #{functionId}, #{userTypeId}, #{creationTime}, #{createdBy})
     </insert>
     <delete id="deleteAuthority" parameterType="authority">
-        DELETE FROM au_authority WHERE id = #{id};
+        DELETE FROM au_authority
+        WHERE id = #{id};
     </delete>
 </mapper>

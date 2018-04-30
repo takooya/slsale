@@ -1,19 +1,15 @@
-package org.slsale.dao;
+package org.slsale.service;
 
 import org.slsale.pojo.Authority;
-import org.slsale.pojo.Role;
-import org.slsale.pojo.User;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * @Author takooya
  * @Description
- * @Date:created in 16:03 2018/4/9
+ * @Date:created in 9:54 2018/4/30
  */
-@Repository
-public interface AuthorityMapper {
+public interface AuthorityService {
     /**  增 */
     int addAuthority(Authority authority)throws Exception;
     /**  删 */

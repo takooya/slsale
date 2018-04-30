@@ -3,9 +3,11 @@ package org.slsale.controller;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.slsale.common.*;
+import org.slsale.pojo.Authority;
 import org.slsale.pojo.Function;
 import org.slsale.pojo.Menu;
 import org.slsale.pojo.Role;
+import org.slsale.service.AuthorityService;
 import org.slsale.service.DataDictionaryService;
 import org.slsale.service.FunctionService;
 import org.slsale.service.RoleService;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,6 +39,8 @@ public class AuthorityController extends BaseController {
     @Autowired
     private RoleService roleService;
     @Autowired
+    private AuthorityService authorityService;
+    @Autowired
     private RedisAPI redis;
     @Autowired
     private DataDictionaryService dataDictionaryService;
@@ -43,7 +48,7 @@ public class AuthorityController extends BaseController {
     /**
      * 进入到权限管理首页面
      */
-    @RequestMapping(value = "/backend/authoritymanage.html",method = RequestMethod.GET)
+    @RequestMapping(value = "/backend/authoritymanage.html", method = RequestMethod.GET)
     public ModelAndView authoritymanage(HttpSession session, Model model) {
         Map<String, Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
         if (baseModel == null) {
@@ -62,21 +67,23 @@ public class AuthorityController extends BaseController {
         }
     }
 
-    /** 获取菜单功能列表 */
-    @RequestMapping(value = "/backend/functions.html",produces = "text/html;charset=UTF-8",method = RequestMethod.POST)
+    /**
+     * 获取菜单功能列表
+     */
+    @RequestMapping(value = "/backend/functions.html", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
     @ResponseBody
-    public String functions(){
-        String resultString="";
-        Function function=new Function();
+    public String functions() {
+        String resultString = "";
+        Function function = new Function();
         //主菜单的parentId均为0
         function.setId(0);
         List<Function> functions;
         try {
-            functions=functionService.getSubFuncList(function);
-            List<Menu> menus=new ArrayList<>();
-            if(functions!=null){
-                for (Function f:functions){
-                    Menu menu=new Menu();
+            functions = functionService.getSubFuncList(function);
+            List<Menu> menus = new ArrayList<>();
+            if (functions != null) {
+                for (Function f : functions) {
+                    Menu menu = new Menu();
                     menu.setMainMenu(f);
                     menu.setSubMenu(functionService.getSubFuncList(f));
                     menus.add(menu);
@@ -88,5 +95,26 @@ public class AuthorityController extends BaseController {
             e.printStackTrace();
         }
         return resultString;
+    }
+
+    @RequestMapping(value = "/backend/getAuthorityDefault.html", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+    @ResponseBody
+    public String getAuthorityDefault(@RequestParam(value = "rid") Integer rid,
+                                      @RequestParam(value = "fid") Integer fid) {
+        Authority authority = new Authority();
+        authority.setRoleId(rid);
+        authority.setFunctionId(fid);
+        log.warn("roleId={},functionId={}",rid,fid);
+        try {
+            authority = authorityService.getAuthorityByRidAndFid(authority);
+            if (authority != null && authority.getRoleId() == rid) {
+                return "success";
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
