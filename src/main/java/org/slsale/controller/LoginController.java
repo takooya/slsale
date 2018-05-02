@@ -48,7 +48,6 @@ public class LoginController extends BaseController {
         if (null != user) {
             Map<String, Object> model = new HashMap<>();
             model.put("user", user);
-
             //判断redis里是否有数据
             //key:menuList+roleId
             //value:menuList
@@ -67,6 +66,23 @@ public class LoginController extends BaseController {
                     model.put("menuList", jsonMenuList);
                 } else {
                     return new ModelAndView("redirect:/");
+                }
+            }
+            if (!redis.exicts("Role" + user.getRoleId() + "UrlList")) {
+                try {
+                    //将用户有权限的url全部放入redis中,用于拦截器拦截请求
+                    Authority authority = new Authority();
+                    authority.setRoleId(user.getRoleId());
+                    List<Function> functionList = functionService.getFunctionUrlByRoreId(authority);
+                    if (functionList != null && functionList.size() >= 0) {
+                        StringBuffer sb = new StringBuffer();
+                        for (Function f : functionList) {
+                            sb.append(f.getFuncUrl());
+                        }
+                        redis.set("Role" + user.getRoleId() + "UrlList", sb.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             session.setAttribute(Constants.SESSION_BASE_MODEL, model);
@@ -145,5 +161,11 @@ public class LoginController extends BaseController {
         session.invalidate();
         this.setCurrentUser(null);
         return "index";
+    }
+
+    //无权限访问的映射
+    @RequestMapping(value = "/401.html")
+    public ModelAndView noRole() {
+        return new ModelAndView("401");
     }
 }

@@ -30,5 +30,13 @@
      </bean>
 
      <!-- 配置interceptors -->
-     
+     <mvc:interceptors>
+         <mvc:interceptor>
+             <mvc:mapping path="/backend/**"/>
+             <mvc:mapping path="/member/**"/>
+             <mvc:mapping path="/message/**"/>
+             <mvc:mapping path="/information/**"/>
+             <bean class="org.slsale.interceptor.SysInterceptor"/>
+         </mvc:interceptor>
+     </mvc:interceptors>
 </beans>
