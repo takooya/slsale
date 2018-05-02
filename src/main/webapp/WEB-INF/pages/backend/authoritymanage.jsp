@@ -38,7 +38,9 @@
 			  	<ul id="functionList"></ul>
 			  	<div class="clear"></div>
 			  	<p class="center">
-					<a id="confirmsave" class="btn btn-large btn-primary"><i class="icon-chevron-left icon-white"></i> 确定赋予权限</a> 
+					<a id="confirmsave" class="btn btn-large btn-primary">
+						<i class="icon-chevron-left icon-white"></i> 确定赋予权限
+					</a>
 				</p>
 			  </td>
 			  <tr>

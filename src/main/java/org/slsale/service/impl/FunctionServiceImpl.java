@@ -33,4 +33,9 @@ public class FunctionServiceImpl implements FunctionService {
     public List<Function> getSubFuncList(Function function) throws Exception {
         return functionMapper.getSubFuncList(function);
     }
+
+    @Override
+    public List<Function> getFunctionUrlByRoreId(Authority authority) throws Exception {
+        return functionMapper.getFunctionUrlByRoreId(authority);
+    }
 }

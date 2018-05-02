@@ -23,4 +23,23 @@
         FROM au_function
         WHERE au_function.`parentId` = #{id}
     </select>
+    <select id="getFuncListByIn" parameterType="String" resultType="function">
+        SELECT *
+        FROM au_function
+        WHERE au_function.`id`
+              IN (${idsSqlString})
+              OR parentId IN (SELECT id
+                              FROM au_function
+                              WHERE au_function.`id` IN (${idsSqlString})
+                                    AND au_function.parentId > 0)
+              OR parentId = 999;
+    </select>
+    <select id="getFunctionUrlByRoreId" parameterType="authority" resultType="function">
+        SELECT funcUrl
+        FROM au_function
+        WHERE id IN (SELECT functionId
+                     FROM au_authority
+                     WHERE roleId = #{roleId}) AND parentId > 0;
+    </select>
+
 </mapper>

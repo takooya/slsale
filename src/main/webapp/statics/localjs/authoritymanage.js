@@ -1,4 +1,4 @@
-// 获取功能菜单列表
+// 获取功能菜单列表 及 复选框勾选的回显
 $(".roleNameAuthority").click(function () {
     var authority = $(this);
     var roleId = authority.attr("roleid");
@@ -89,4 +89,37 @@ $("#reverse").click(function () {//反选
     $("#functionList :checkbox").each(function () {
         $(this).attr("checked", !$(this).attr("checked"));
     });
+});
+//提交授权修改
+$("#confirmsave").click(function () {
+    if(confirm("您确定要修改当前用户的权限吗")){
+        //获得roldId和functionIds
+        var ids=$("#roleidhide").val()+"-";
+        $("#functionList :checkbox").each(function () {
+            if($(this).attr("checked")=="checked"){
+                ids+=$(this).attr("funcid")+"-";
+            }
+        });
+        alert(ids);
+        //ajax递交
+        $.ajax({
+            url:'/backend/modifyAuthority.html',
+            type: 'POST',
+            data: {ids: ids},
+            dataType: 'html',
+            timeout: 1000,
+            error: function () {
+                alert("修改权限失败!");
+            },
+            success: function (result) {
+                if(result=="nodata"){
+                    alert("对不起,功能列表获取失败,请重试");
+                }else if(result == "success"){
+                    alert("恭喜你,权限修改成功");
+                }else {
+                    alert("系统异常,请重试");
+                }
+            }
+        });
+    }
 });

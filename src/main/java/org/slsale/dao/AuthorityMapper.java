@@ -26,4 +26,6 @@ public interface AuthorityMapper {
     List<Authority> getAuthorities()throws Exception;
 
     Authority getAuthorityByRidAndFid(Authority authority)throws Exception;
+
+    int deleteAuthorityByRoleid(Authority authority)throws Exception;
 }

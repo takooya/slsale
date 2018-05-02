@@ -15,4 +15,6 @@ public interface FunctionService {
     List<Function> getSubFunctionList(Function function)throws Exception;
 
     List<Function> getSubFuncList(Function function)throws Exception;
+
+    List<Function> getFunctionUrlByRoreId(Authority authority)throws Exception;
 }

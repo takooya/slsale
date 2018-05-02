@@ -35,4 +35,8 @@
         DELETE FROM au_authority
         WHERE id = #{id};
     </delete>
+    <delete id="deleteAuthorityByRoleid" parameterType="authority">
+        DELETE FROM au_authority
+        WHERE roleId = #{roleId};
+    </delete>
 </mapper>

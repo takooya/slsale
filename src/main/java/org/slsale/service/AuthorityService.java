@@ -22,4 +22,6 @@ public interface AuthorityService {
     List<Authority> getAuthorities()throws Exception;
 
     Authority getAuthorityByRidAndFid(Authority authority)throws Exception;
+
+    boolean hl_addAuthority(String[] idsArrayStrings, String userName) throws Exception;
 }

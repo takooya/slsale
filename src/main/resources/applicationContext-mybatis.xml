@@ -94,7 +94,7 @@ SQLException,如设为0则无限期等待。单位毫秒。Default: 0 -->
     </bean>
     <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
         <constructor-arg ref="jedisPoolConfig"/>
-        <constructor-arg value="172.20.10.3" type="java.lang.String"/>
+        <constructor-arg value="192.168.62.128" type="java.lang.String"/>
         <constructor-arg value="6379" type="int"/>
     </bean>
     <bean id="redisAPI" class="org.slsale.common.RedisAPI">

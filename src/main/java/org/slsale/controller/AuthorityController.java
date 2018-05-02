@@ -3,10 +3,7 @@ package org.slsale.controller;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.slsale.common.*;
-import org.slsale.pojo.Authority;
-import org.slsale.pojo.Function;
-import org.slsale.pojo.Menu;
-import org.slsale.pojo.Role;
+import org.slsale.pojo.*;
 import org.slsale.service.AuthorityService;
 import org.slsale.service.DataDictionaryService;
 import org.slsale.service.FunctionService;
@@ -14,6 +11,7 @@ import org.slsale.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,6 +38,8 @@ public class AuthorityController extends BaseController {
     private RoleService roleService;
     @Autowired
     private AuthorityService authorityService;
+    @Autowired
+    private LoginController loginController;
     @Autowired
     private RedisAPI redis;
     @Autowired
@@ -104,7 +104,7 @@ public class AuthorityController extends BaseController {
         Authority authority = new Authority();
         authority.setRoleId(rid);
         authority.setFunctionId(fid);
-        log.warn("roleId={},functionId={}",rid,fid);
+        log.warn("roleId={},functionId={}", rid, fid);
         try {
             authority = authorityService.getAuthorityByRidAndFid(authority);
             if (authority != null && authority.getRoleId() == rid) {
@@ -116,5 +116,44 @@ public class AuthorityController extends BaseController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @RequestMapping(value = "/backend/modifyAuthority.html", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+    @ResponseBody
+    public Object modifyAuthority(HttpSession session
+            , @RequestParam(value = "ids") String ids) {
+        String resultString = "nodata";
+        try {
+            if (null != ids) {
+                String[] idsArrayStrings = ids.split("-");
+                log.warn("idsArrayStrings长度={},idsArrayStrings={}", idsArrayStrings.length, idsArrayStrings);
+                if (idsArrayStrings.length > 0) {
+                    User user = this.getCurrentUser();
+                    //如果修改当前用户的权限,则需更新redis
+                    //先删除再添加,需要事务
+                    boolean judge = authorityService.hl_addAuthority(idsArrayStrings, user.getLoginCode());
+                    List<Menu> menuList = null;
+                    menuList = loginController.getFuncByCurrentUser(Integer.valueOf(idsArrayStrings[0]));
+                    String menuListJson = JSONObject.toJSONString(menuList);
+                    redis.set("menuList" + idsArrayStrings[0], menuListJson);
+                    //将用户有权限的url全部放入redis中,用于拦截器拦截请求
+                    Authority authority = new Authority();
+                    authority.setRoleId(Integer.valueOf(idsArrayStrings[0]));
+                    List<Function> functionList = functionService.getFunctionUrlByRoreId(authority);
+                    if (functionList != null && functionList.size() >= 0) {
+                        StringBuffer sb = new StringBuffer();
+                        for (Function f : functionList) {
+                            sb.append(f.getFuncUrl());
+                        }
+                        //将用户有权限的url全部放入redis中,用于拦截器拦截请求
+                        redis.set("Role" + idsArrayStrings[0] + "UrlList", sb.toString());
+                    }
+                    resultString = "success";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultString;
     }
 }
