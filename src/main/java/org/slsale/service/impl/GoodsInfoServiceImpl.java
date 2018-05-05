@@ -19,7 +19,17 @@ public class GoodsInfoServiceImpl implements GoodsInfoService {
     private GoodsInfoMapper goodsInfoMapper;
 
     @Override
-    public List<GoodsInfo> getGoodsInfoList() throws Exception {
-        return goodsInfoMapper.getGoodsInfoList();
+    public List<GoodsInfo> getGoodsInfoList(String goodsName,Integer state) throws Exception {
+        return goodsInfoMapper.getGoodsInfoList(goodsName,state);
+    }
+
+    @Override
+    public int addGoodInfo(GoodsInfo goodsInfo) throws Exception {
+        return goodsInfoMapper.addGoodInfo(goodsInfo);
+    }
+
+    @Override
+    public int delGoodInfoById(GoodsInfo goodsInfo) throws Exception {
+        return goodsInfoMapper.delGoodInfoById(goodsInfo);
     }
 }

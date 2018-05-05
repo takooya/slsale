@@ -65,6 +65,7 @@ SQLException,如设为0则无限期等待。单位毫秒。Default: 0 -->
     <!-- AOP事务处理  -->
     <aop:aspectj-autoproxy/>
     <aop:config proxy-target-class="true">
+        <!--为true则是基于类的代理将起作用（需要cglib库），为false(默认)则标准的JDK基于接口的代理将起作用-->
         <aop:pointcut expression="execution(* *org.slsale.service..*(..))" id="transService"/>
         <!--advice-ref:织入的方法  pointcut-ref:切点位置-->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="transService"/>

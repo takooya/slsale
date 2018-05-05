@@ -5,5 +5,23 @@
     <select id="getGoodsInfoList" resultType="goodsInfo">
         SELECT *
         FROM goods_info
+        <trim prefix="WHERE" prefixOverrides="and|or">
+            <if test="goodsName!=null">
+                and goodsName like "%"#{goodsName}"%"
+            </if>
+            <if test="state!=null">
+                and state = #{state}
+            </if>
+        </trim>
     </select>
+    <insert id="addGoodInfo" parameterType="goodsInfo">
+        #         注意goodsSN字段名和属性名不一致
+        INSERT INTO goods_info (goodsSN, goodsName, goodsFormat, marketPrice, realPrice, state, note, num, unit, createTime, lastUpdateTime, createdBy)
+        VALUES
+            (#{goodsSn}, #{goodsName}, #{goodsFormat}, #{marketPrice}, #{realPrice}, #{state}, #{note}, #{num}, #{unit},
+                         #{createTime}, #{lastUpdateTime}, #{createdBy})
+    </insert>
+    <delete id="delGoodInfoById" parameterType="goodsInfo">
+        DELETE FROM goods_info WHERE id = #{id};
+    </delete>
 </mapper>

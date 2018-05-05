@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -26,9 +27,29 @@ public class GoodsInfoServiceImplTest {
     @Autowired
     private GoodsInfoService goodsInfoService;
     @Test
-    public void getGoodsInfoList() throws Exception {
-        List<GoodsInfo> goodsInfoList = goodsInfoService.getGoodsInfoList();
+    public void getGoodsInfoListTest() throws Exception {
+        List<GoodsInfo> goodsInfoList = goodsInfoService.getGoodsInfoList("上衣",null);
         log.warn("goodsInfoList={}",goodsInfoList);
     }
-
+    @Test
+    public void addGoodInfoTest() throws Exception {
+        GoodsInfo goodsInfo=new GoodsInfo();
+        goodsInfo.setLastUpdateTime(new Date());
+        goodsInfo.setGoodsName("admin");
+        goodsInfo.setGoodsSn("admin");
+        goodsInfo.setMarketPrice(100);
+        goodsInfo.setRealPrice(100);
+        goodsInfo.setState(2);
+        goodsInfo.setNum(10);
+        goodsInfo.setUnit("admin");
+        int i = goodsInfoService.addGoodInfo(goodsInfo);
+        log.warn("insert了{}数据",i);
+    }
+    @Test
+    public void delGoodInfoByIdTest() throws Exception {
+        GoodsInfo goodsInfo=new GoodsInfo();
+        goodsInfo.setId(27);
+        int i = goodsInfoService.delGoodInfoById(goodsInfo);
+        log.warn("delete了{}数据",i);
+    }
 }

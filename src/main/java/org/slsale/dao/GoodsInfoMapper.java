@@ -1,5 +1,6 @@
 package org.slsale.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.slsale.pojo.GoodsInfo;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +13,11 @@ import java.util.List;
  */
 @Repository
 public interface GoodsInfoMapper {
-    List<GoodsInfo> getGoodsInfoList()throws Exception;
+    List<GoodsInfo> getGoodsInfoList(
+            @Param(value = "goodsName") String goodsName,
+            @Param(value = "state") Integer state) throws Exception;
+
+    int addGoodInfo(GoodsInfo goodsInfo)throws Exception;
+
+    int delGoodInfoById(GoodsInfo goodsInfo)throws Exception;
 }
