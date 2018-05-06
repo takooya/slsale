@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.slsale.dao.GoodsPackMapper">
+    <select id="getGoodsPackList" resultType="goodsPack">
+        SELECT *
+        FROM goods_pack
+        <trim prefix="WHERE" prefixOverrides="and|or">
+            <if test="goodsPackName!=null">
+                and goodsPackName like "%"#{goodsPackName}"%"
+            </if>
+            <if test="typeName!=null">
+                and typeName = #{typeName}
+            </if>
+            <if test="state!=null">
+                and state = #{state}
+            </if>
+        </trim>
+    </select>
+    <insert id="addGoodsPack" parameterType="goodsPack">
+        INSERT INTO goods_pack (goodsPackName, goodsPackCode, typeId, typeName, totalPrice,
+                                state, note, createdBy, createTime, lastUpdateTime)
+        VALUES
+            (#{goodsPackName}, #{goodsPackCode}, #{typeId}, #{typeName}, #{totalPrice},
+             #{state}, #{note}, #{createdBy}, #{createTime}, #{lastUpdateTime})
+    </insert>
+    <!--<delete id="delGoodInfoById" parameterType="goodsInfo">
+        DELETE FROM goods_info WHERE id = #{id};
+    </delete>-->
+</mapper>
